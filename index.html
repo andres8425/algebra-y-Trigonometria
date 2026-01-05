@@ -1,42 +1,408 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <title>Matemáticas con Andrés</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Matemáticas - Álgebra y Funciones</title>
 
-  <!-- MathJax -->
+  <!-- MathJax (LaTeX en la web) -->
   <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
   <script id="MathJax-script" async
-   src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
   </script>
 
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 40px;
-      line-height: 1.7;
+    :root{
+      --bg:#0b1220;
+      --card:#111a2e;
+      --text:#eaf0ff;
+      --muted:#b8c3e6;
+      --accent:#7aa2ff;
+      --border: rgba(255,255,255,.10);
+      --shadow: 0 10px 30px rgba(0,0,0,.35);
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      background: radial-gradient(1200px 700px at 20% 0%, rgba(122,162,255,.22), transparent 60%),
+                  radial-gradient(900px 600px at 90% 20%, rgba(122,255,214,.12), transparent 55%),
+                  var(--bg);
+      color:var(--text);
+      line-height:1.7;
+    }
+    a{color:var(--accent); text-decoration:none}
+    a:hover{text-decoration:underline}
+    header{
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      backdrop-filter: blur(10px);
+      background: rgba(11,18,32,.65);
+      border-bottom: 1px solid var(--border);
+    }
+    .container{
+      width: min(1050px, 92vw);
+      margin: 0 auto;
+    }
+    .nav{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      padding: 14px 0;
+      gap: 16px;
+    }
+    .brand{
+      display:flex;
+      flex-direction:column;
+      gap:2px;
+    }
+    .brand strong{
+      font-size: 16px;
+      letter-spacing:.3px;
+    }
+    .brand span{
+      color:var(--muted);
+      font-size: 12.5px;
+    }
+    .links{
+      display:flex;
+      flex-wrap:wrap;
+      gap: 10px;
+      justify-content:flex-end;
+    }
+    .pill{
+      display:inline-block;
+      padding: 8px 10px;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      background: rgba(255,255,255,.04);
+      font-size: 13px;
+    }
+    .pill:hover{
+      background: rgba(122,162,255,.12);
+      border-color: rgba(122,162,255,.35);
+      text-decoration:none;
+    }
+
+    .hero{
+      padding: 34px 0 10px;
+    }
+    .heroCard{
+      border: 1px solid var(--border);
+      background: linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.02));
+      border-radius: 18px;
+      padding: 24px;
+      box-shadow: var(--shadow);
+    }
+    h1{
+      margin:0 0 10px;
+      font-size: clamp(24px, 3.5vw, 38px);
+      line-height:1.15;
+    }
+    .subtitle{
+      margin:0;
+      color: var(--muted);
+      max-width: 72ch;
+    }
+    .grid{
+      display:grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 14px;
+      margin: 18px 0 0;
+    }
+    .stat{
+      grid-column: span 6;
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,.03);
+      border-radius: 14px;
+      padding: 14px;
+    }
+    .stat strong{display:block; font-size: 14px; margin-bottom: 6px;}
+    .stat span{color:var(--muted); font-size: 13px;}
+
+    main{
+      padding: 18px 0 60px;
+    }
+    section{
+      margin: 18px 0;
+      scroll-margin-top: 90px;
+    }
+    .card{
+      border: 1px solid var(--border);
+      background: rgba(17,26,46,.65);
+      border-radius: 18px;
+      padding: 20px;
+      box-shadow: var(--shadow);
+    }
+    h2{
+      margin: 0 0 10px;
+      font-size: 22px;
+    }
+    .muted{color:var(--muted)}
+    .twoCols{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin-top: 12px;
+    }
+    .box{
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 14px;
+      background: rgba(255,255,255,.03);
+    }
+    .box h3{
+      margin:0 0 8px;
+      font-size: 15px;
+    }
+    ul{margin: 8px 0 0 18px}
+    code{
+      background: rgba(255,255,255,.08);
+      padding: 2px 6px;
+      border-radius: 8px;
+      border: 1px solid rgba(255,255,255,.10);
+    }
+    footer{
+      border-top: 1px solid var(--border);
+      padding: 18px 0 30px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    @media (max-width: 820px){
+      .twoCols{grid-template-columns: 1fr;}
+      .stat{grid-column: span 12;}
+      .links{justify-content:flex-start}
     }
   </style>
 </head>
 
 <body>
+  <header>
+    <div class="container">
+      <div class="nav">
+        <div class="brand">
+          <strong>Matemáticas: Álgebra y Funciones</strong>
+          <span>Notas rápidas + fórmulas en LaTeX (MathJax)</span>
+        </div>
 
-<h1>Bienvenidos</h1>
+        <nav class="links" aria-label="Secciones">
+          <a class="pill" href="#algebra">Expresiones algebraicas</a>
+          <a class="pill" href="#polinomicas">Ecuaciones polinómicas</a>
+          <a class="pill" href="#funciones">Funciones</a>
+          <a class="pill" href="#explog">Exponenciales y logarítmicas</a>
+          <a class="pill" href="#trigo">Trigonométricas</a>
+        </nav>
+      </div>
+    </div>
+  </header>
 
-<p>Este es un sitio de matemáticas aplicadas.</p>
+  <div class="container hero">
+    <div class="heroCard">
+      <h1>Guía compacta de Álgebra y Funciones</h1>
+      <p class="subtitle">
+        Página de referencia con ejemplos típicos, identidades y mini-ejercicios.
+        Puedes editar el contenido, agregar más secciones o enlazar a páginas separadas luego.
+      </p>
 
-<h2>Ecuación de ejemplo</h2>
+      <div class="grid">
+        <div class="stat">
+          <strong>Formato matemático</strong>
+          <span>Escribe fórmulas con <code>$$ ... $$</code> o <code>\( ... \)</code> gracias a MathJax.</span>
+        </div>
+        <div class="stat">
+          <strong>Uso docente</strong>
+          <span>Ideal para tus estudiantes: claro, navegable, y con ejemplos listos para clase.</span>
+        </div>
+      </div>
+    </div>
+  </div>
 
-<p>
-La ecuación diferencial estocástica:
-</p>
+  <main class="container">
+    <!-- 1) Expresiones algebraicas -->
+    <section id="algebra">
+      <div class="card">
+        <h2>1) Expresiones algebraicas</h2>
+        <p class="muted">Operaciones, factorización, productos notables y racionalización.</p>
 
-$$
-dX_t = \mu X_t\,dt + \sigma X_t\,dW_t
-$$
+        <div class="twoCols">
+          <div class="box">
+            <h3>Identidades útiles</h3>
+            <ul>
+              <li>Producto notable: \((a+b)^2 = a^2 + 2ab + b^2\)</li>
+              <li>Diferencia de cuadrados: \(a^2-b^2=(a-b)(a+b)\)</li>
+              <li>Cubo de binomio: \((a+b)^3=a^3+3a^2b+3ab^2+b^3\)</li>
+            </ul>
+          </div>
+          <div class="box">
+            <h3>Ejemplo rápido</h3>
+            <p>Simplifica:</p>
+            $$\frac{x^2-9}{x-3}$$
+            <p>Factoriza \(x^2-9=(x-3)(x+3)\), entonces:</p>
+            $$\frac{(x-3)(x+3)}{x-3}=x+3,\quad x\neq 3.$$
+          </div>
+        </div>
 
-<h2>Contacto</h2>
-<p>Email: andres@email.com</p>
+        <div class="box" style="margin-top:14px;">
+          <h3>Mini-ejercicio</h3>
+          <p>Factoriza completamente:</p>
+          $$x^2 - 5x + 6$$
+          <p class="muted">Pista: busca dos números que multipliquen 6 y sumen -5.</p>
+        </div>
+      </div>
+    </section>
 
+    <!-- 2) Ecuaciones polinómicas -->
+    <section id="polinomicas">
+      <div class="card">
+        <h2>2) Ecuaciones polinómicas</h2>
+        <p class="muted">Estrategias: factorización, fórmula cuadrática, teorema del factor, raíces racionales.</p>
+
+        <div class="twoCols">
+          <div class="box">
+            <h3>Cuadráticas</h3>
+            <p>Para \(ax^2+bx+c=0\):</p>
+            $$x=\frac{-b\pm \sqrt{b^2-4ac}}{2a}$$
+            <p class="muted">El discriminante \(\Delta=b^2-4ac\) determina el tipo de raíces.</p>
+          </div>
+          <div class="box">
+            <h3>Ejemplo</h3>
+            <p>Resuelve:</p>
+            $$2x^2-3x-2=0$$
+            <p>Con fórmula cuadrática:</p>
+            $$x=\frac{3\pm\sqrt{(-3)^2-4(2)(-2)}}{2(2)}=
+            \frac{3\pm\sqrt{9+16}}{4}=\frac{3\pm5}{4}$$
+            $$x=2\quad \text{o}\quad x=-\frac12.$$
+          </div>
+        </div>
+
+        <div class="box" style="margin-top:14px;">
+          <h3>Teorema del factor</h3>
+          <p>\((x-r)\) es factor de \(p(x)\) si y solo si \(p(r)=0\).</p>
+          <p class="muted">Útil para polinomios de grado 3 o más cuando pruebas candidatos racionales.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3) Funciones -->
+    <section id="funciones">
+      <div class="card">
+        <h2>3) Funciones</h2>
+        <p class="muted">Dominio, rango, composición, inversa, paridad y transformaciones.</p>
+
+        <div class="twoCols">
+          <div class="box">
+            <h3>Conceptos base</h3>
+            <ul>
+              <li>Dominio: valores permitidos de \(x\).</li>
+              <li>Rango/imagen: valores que toma \(f(x)\).</li>
+              <li>Composición: \((f\circ g)(x)=f(g(x))\).</li>
+              <li>Inversa: \(f^{-1}\) existe si \(f\) es inyectiva (en el dominio elegido).</li>
+            </ul>
+          </div>
+          <div class="box">
+            <h3>Ejemplo de dominio</h3>
+            <p>Para:</p>
+            $$f(x)=\sqrt{2x-1}$$
+            <p>Se requiere \(2x-1\ge 0\Rightarrow x\ge \frac12\). Entonces:</p>
+            $$\mathrm{Dom}(f)=\left[\frac12,\infty\right).$$
+          </div>
+        </div>
+
+        <div class="box" style="margin-top:14px;">
+          <h3>Transformaciones típicas</h3>
+          <p>Si \(y=f(x)\), entonces:</p>
+          <ul>
+            <li>\(y=f(x-h)\): desplaza a la derecha \(h\).</li>
+            <li>\(y=f(x)+k\): desplaza arriba \(k\).</li>
+            <li>\(y=af(x)\): estira/encoge verticalmente por \(|a|\).</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4) Exponencial y logarítmicas -->
+    <section id="explog">
+      <div class="card">
+        <h2>4) Función exponencial y logarítmicas</h2>
+        <p class="muted">Propiedades, ecuaciones, cambio de base y modelos de crecimiento/decadencia.</p>
+
+        <div class="twoCols">
+          <div class="box">
+            <h3>Exponencial</h3>
+            <p>Para \(a>0, a\neq 1\):</p>
+            $$f(x)=a^x$$
+            <p>Propiedad clave:</p>
+            $$a^{x+y}=a^x a^y,\qquad a^{-x}=\frac{1}{a^x}$$
+          </div>
+          <div class="box">
+            <h3>Logaritmo</h3>
+            <p>\(\log_a(x)\) es la inversa de \(a^x\):</p>
+            $$a^{\log_a(x)}=x,\quad \log_a(a^x)=x$$
+            <p>Cambio de base:</p>
+            $$\log_a(x)=\frac{\ln(x)}{\ln(a)}$$
+          </div>
+        </div>
+
+        <div class="box" style="margin-top:14px;">
+          <h3>Ejemplo de ecuación exponencial</h3>
+          <p>Resuelve:</p>
+          $$2^{x+1}=16$$
+          <p>Como \(16=2^4\), entonces \(x+1=4\Rightarrow x=3\).</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 5) Trigonométricas -->
+    <section id="trigo">
+      <div class="card">
+        <h2>5) Funciones trigonométricas</h2>
+        <p class="muted">Definiciones, identidades, periodicidad y ecuaciones trigonométricas básicas.</p>
+
+        <div class="twoCols">
+          <div class="box">
+            <h3>Identidades fundamentales</h3>
+            $$\sin^2(x)+\cos^2(x)=1$$
+            $$\tan(x)=\frac{\sin(x)}{\cos(x)},\quad \sec(x)=\frac{1}{\cos(x)}$$
+            <p class="muted">Ojo con el dominio: \(\tan(x)\) no existe cuando \(\cos(x)=0\).</p>
+          </div>
+          <div class="box">
+            <h3>Periodicidad</h3>
+            <ul>
+              <li>\(\sin(x)\) y \(\cos(x)\) tienen período \(2\pi\).</li>
+              <li>\(\tan(x)\) tiene período \(\pi\).</li>
+            </ul>
+            <p>Ejemplo:</p>
+            $$\sin(x)=\sin(x+2\pi k),\quad k\in\mathbb{Z}.$$
+          </div>
+        </div>
+
+        <div class="box" style="margin-top:14px;">
+          <h3>Mini-ejercicio</h3>
+          <p>Resuelve en \([0,2\pi)\):</p>
+          $$\cos(x)=0$$
+          <p class="muted">Pista: identifica dónde el coseno cruza 0 en la circunferencia unitaria.</p>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="card">
+        <h2>Siguiente mejora (si quieres)</h2>
+        <ul>
+          <li>Separar cada sección en páginas: <code>algebra.html</code>, <code>funciones.html</code>, etc.</li>
+          <li>Agregar gráficas interactivas con Desmos o GeoGebra embebidos.</li>
+          <li>Convertir esto en un sitio tipo “curso” con menú lateral.</li>
+        </ul>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container">
+      Hecho con GitHub Pages + MathJax. Edita este archivo <code>index.html</code> para ampliar contenido.
+    </div>
+  </footer>
 </body>
 </html>
