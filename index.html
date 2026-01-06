@@ -12,27 +12,120 @@
   </script>
 
   <style>
-    :root{--bg:#0b1220;--card:#111a2e;--text:#eaf0ff;--muted:#b8c3e6;--accent:#7aa2ff;--border:rgba(255,255,255,.10);--shadow:0 10px 30px rgba(0,0,0,.35);}
+    :root{
+      --bg:#0b1220;
+      --card:#111a2e;
+      --text:#eaf0ff;
+      --muted:#b8c3e6;
+      --accent:#7aa2ff;
+      --border:rgba(255,255,255,.10);
+      --shadow:0 10px 30px rgba(0,0,0,.35);
+    }
     *{box-sizing:border-box}
-    body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:radial-gradient(1200px 700px at 20% 0%,rgba(122,162,255,.22),transparent 60%),radial-gradient(900px 600px at 90% 20%,rgba(122,255,214,.12),transparent 55%),var(--bg);color:var(--text);line-height:1.7}
-    a{color:var(--accent);text-decoration:none} a:hover{text-decoration:underline}
-    header{position:sticky;top:0;z-index:50;backdrop-filter:blur(10px);background:rgba(11,18,32,.65);border-bottom:1px solid var(--border)}
-    .container{width:min(1050px,92vw);margin:0 auto}
-    .nav{display:flex;align-items:center;justify-content:space-between;padding:14px 0;gap:16px}
-    .brand strong{font-size:16px;letter-spacing:.3px;display:block}
-    .brand span{color:var(--muted);font-size:12.5px}
-    .links{display:flex;flex-wrap:wrap;gap:10px;justify-content:flex-end}
-    .pill{display:inline-block;padding:8px 10px;border:1px solid var(--border);border-radius:999px;background:rgba(255,255,255,.04);font-size:13px}
-    .pill:hover{background:rgba(122,162,255,.12);border-color:rgba(122,162,255,.35);text-decoration:none}
+    body{
+      margin:0;
+      font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+      background:
+        radial-gradient(1200px 700px at 20% 0%,rgba(122,162,255,.22),transparent 60%),
+        radial-gradient(900px 600px at 90% 20%,rgba(122,255,214,.12),transparent 55%),
+        var(--bg);
+      color:var(--text);
+      line-height:1.7
+    }
+    a{color:var(--accent);text-decoration:none}
+    a:hover{text-decoration:underline}
+
+    header{
+      position:sticky;
+      top:0;
+      z-index:50;
+      backdrop-filter:blur(10px);
+      background:rgba(11,18,32,.65);
+      border-bottom:1px solid var(--border)
+    }
+    .container{
+      width:min(1050px,92vw);
+      margin:0 auto
+    }
+    .nav{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      padding:14px 0;
+      gap:16px
+    }
+    .brand strong{
+      font-size:16px;
+      letter-spacing:.3px;
+      display:block
+    }
+    .brand span{
+      color:var(--muted);
+      font-size:12.5px
+    }
+    .links{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      justify-content:flex-end
+    }
+    .pill{
+      display:inline-block;
+      padding:8px 10px;
+      border:1px solid var(--border);
+      border-radius:999px;
+      background:rgba(255,255,255,.04);
+      font-size:13px
+    }
+    .pill:hover{
+      background:rgba(122,162,255,.12);
+      border-color:rgba(122,162,255,.35);
+      text-decoration:none
+    }
+
     main{padding:26px 0 60px}
-    .card{border:1px solid var(--border);background:rgba(17,26,46,.65);border-radius:18px;padding:22px;box-shadow:var(--shadow)}
-    h1{margin:0 0 10px;font-size:clamp(24px,3.5vw,38px);line-height:1.15}
+    .card{
+      border:1px solid var(--border);
+      background:rgba(17,26,46,.65);
+      border-radius:18px;
+      padding:22px;
+      box-shadow:var(--shadow)
+    }
+    h1{
+      margin:0 0 10px;
+      font-size:clamp(24px,3.5vw,38px);
+      line-height:1.15
+    }
     .muted{color:var(--muted)}
-    .grid{display:grid;grid-template-columns:repeat(12,1fr);gap:14px;margin-top:14px}
-    .box{grid-column:span 6;border:1px solid var(--border);border-radius:14px;padding:14px;background:rgba(255,255,255,.03)}
-    .box h2{margin:0 0 8px;font-size:16px}
-    footer{border-top:1px solid var(--border);padding:18px 0 30px;color:var(--muted);font-size:13px}
-    @media (max-width:820px){.box{grid-column:span 12}.links{justify-content:flex-start}}
+    .grid{
+      display:grid;
+      grid-template-columns:repeat(12,1fr);
+      gap:14px;
+      margin-top:14px
+    }
+    .box{
+      grid-column:span 6;
+      border:1px solid var(--border);
+      border-radius:14px;
+      padding:14px;
+      background:rgba(255,255,255,.03)
+    }
+    .box h2{
+      margin:0 0 8px;
+      font-size:16px
+    }
+
+    footer{
+      border-top:1px solid var(--border);
+      padding:18px 0 30px;
+      color:var(--muted);
+      font-size:13px
+    }
+
+    @media (max-width:820px){
+      .box{grid-column:span 12}
+      .links{justify-content:flex-start}
+    }
   </style>
 </head>
 
@@ -44,12 +137,15 @@
           <strong>Matemáticas — Álgebra y Funciones</strong>
           <span>andres8425.github.io</span>
         </div>
+
+        <!-- MENÚ SUPERIOR -->
         <nav class="links" aria-label="Secciones">
           <a class="pill" href="algebra.html">Expresiones algebraicas</a>
           <a class="pill" href="polinomicas.html">Ecuaciones polinómicas</a>
           <a class="pill" href="funciones.html">Funciones</a>
           <a class="pill" href="explog.html">Exponenciales y logarítmicas</a>
           <a class="pill" href="trigo.html">Trigonométricas</a>
+          <a class="pill" href="quizzes.html">Quizzes</a>
         </nav>
       </div>
     </div>
@@ -59,7 +155,7 @@
     <div class="card">
       <h1>Bienvenido</h1>
       <p class="muted">
-        Este sitio reúne notas y ejemplos cortos para Álgebra y Funciones.  
+        Este sitio reúne notas y ejemplos cortos para Álgebra y Funciones.
         Las fórmulas se renderizan con MathJax (LaTeX en la web).
       </p>
 
@@ -69,10 +165,12 @@
           $$\sin^2(x)+\cos^2(x)=1$$
           <p class="muted">Puedes escribir ecuaciones con <code>$$ ... $$</code>.</p>
         </div>
+
         <div class="box">
           <h2>Cómo usar el sitio</h2>
           <ul class="muted" style="margin:8px 0 0 18px;">
             <li>Entra a cualquier tema desde el menú.</li>
+            <li>Explora la sección <strong>Quizzes</strong> para actividades interactivas.</li>
             <li>Edita los archivos <code>.html</code> para ampliar contenido.</li>
             <li>Luego solo haces Commit y la web se actualiza.</li>
           </ul>
@@ -82,7 +180,9 @@
   </main>
 
   <footer>
-    <div class="container">Hecho con GitHub Pages + MathJax.</div>
+    <div class="container">
+      Hecho con GitHub Pages + MathJax.
+    </div>
   </footer>
 </body>
 </html>
