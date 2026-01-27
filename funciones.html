@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
 <title>Funciones</title>
 
+<!-- MathJax -->
 <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
 <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 
@@ -33,9 +34,22 @@ main{padding:22px 0 60px}
   padding:12px 12px;
   border-radius:14px;
   cursor:pointer;
+  transition: transform .08s ease, background .12s ease, border-color .12s ease;
 }
 .optionBtn:hover{background:rgba(122,162,255,.10);border-color:rgba(122,162,255,.35)}
-.optionBtn[disabled]{opacity:.75;cursor:not-allowed}
+.optionBtn:active{transform: translateY(1px)}
+.optionBtn[disabled]{opacity:.78;cursor:not-allowed}
+
+/* Estados visuales tras responder */
+.optionBtn.correct{
+  border-color: rgba(120,255,150,.45);
+  background: rgba(120,255,150,.10);
+}
+.optionBtn.wrong{
+  border-color: rgba(255,120,120,.45);
+  background: rgba(255,120,120,.08);
+}
+
 .feedback{
   margin-top:12px;
   padding:12px;
@@ -97,16 +111,16 @@ main{padding:22px 0 60px}
       <p class="muted" style="margin:0;">Selecciona una opción:</p>
 
       <div class="options" id="options">
-        <button class="optionBtn" data-correct="false">
+        <button class="optionBtn" type="button" data-correct="false">
           A) \(f^{-1}(x)=3x+7\)
         </button>
-        <button class="optionBtn" data-correct="true">
+        <button class="optionBtn" type="button" data-correct="true">
           B) \(f^{-1}(x)=\dfrac{x+7}{3}\)
         </button>
-        <button class="optionBtn" data-correct="false">
+        <button class="optionBtn" type="button" data-correct="false">
           C) \(f^{-1}(x)=\dfrac{x-7}{3}\)
         </button>
-        <button class="optionBtn" data-correct="false">
+        <button class="optionBtn" type="button" data-correct="false">
           D) \(f^{-1}(x)=\dfrac{7-x}{3}\)
         </button>
       </div>
@@ -124,26 +138,44 @@ main{padding:22px 0 60px}
 
 <script>
 (function(){
-  const options = document.getElementById("options");
+  const optionsBox = document.getElementById("options");
   const feedback = document.getElementById("feedback");
   const retryBtn = document.getElementById("retryBtn");
 
-  // Explicación para mostrar (especialmente cuando se equivoca)
   const explainHTML = `
     <strong>Cómo se resuelve:</strong>
     <ol style="margin:8px 0 0 18px;">
-      <li>Escribe \(y = 3x - 7\).</li>
-      <li>Intercambia variables: \(x = 3y - 7\).</li>
-      <li>Despeja \(y\): \(x + 7 = 3y \Rightarrow y = \\dfrac{x+7}{3}\).</li>
-      <li>Por tanto, \(f^{-1}(x)=\\dfrac{x+7}{3}\).</li>
+      <li>Escribe \\(y = 3x - 7\\).</li>
+      <li>Intercambia variables: \\(x = 3y - 7\\).</li>
+      <li>Despeja \\(y\\): \\(x + 7 = 3y \\Rightarrow y = \\dfrac{x+7}{3}\\).</li>
+      <li>Por tanto, \\(f^{-1}(x)=\\dfrac{x+7}{3}\\).</li>
     </ol>
   `;
 
   function lockOptions(lock){
-    options.querySelectorAll("button").forEach(b => b.disabled = lock);
+    optionsBox.querySelectorAll("button").forEach(b => b.disabled = lock);
   }
 
-  options.addEventListener("click", (e) => {
+  function clearMarks(){
+    optionsBox.querySelectorAll("button").forEach(b => {
+      b.classList.remove("correct","wrong");
+    });
+  }
+
+  function markCorrectOption(){
+    const correctBtn = optionsBox.querySelector('button[data-correct="true"]');
+    if (correctBtn) correctBtn.classList.add("correct");
+  }
+
+  function renderMath(el){
+    if (window.MathJax && window.MathJax.typesetPromise) {
+      // typesetClear ayuda a evitar “doble render” en algunos casos
+      if (window.MathJax.typesetClear) window.MathJax.typesetClear([el]);
+      return window.MathJax.typesetPromise([el]).catch(() => {});
+    }
+  }
+
+  optionsBox.addEventListener("click", (e) => {
     const btn = e.target.closest("button");
     if (!btn) return;
 
@@ -151,27 +183,28 @@ main{padding:22px 0 60px}
     lockOptions(true);
 
     if (isCorrect){
+      btn.classList.add("correct");
       feedback.className = "feedback ok";
-      feedback.innerHTML = `✅ <strong>Correcto.</strong> La inversa es \(f^{-1}(x)=\\dfrac{x+7}{3}\).`;
+      feedback.innerHTML =
+        `✅ <strong>Correcto.</strong> La inversa es \\(f^{-1}(x)=\\dfrac{x+7}{3}\\).`;
+      renderMath(feedback);
     } else {
-      feedback.className = "feedback bad";
-      feedback.innerHTML = `❌ <strong>Incorrecto.</strong> ${explainHTML}`;
-    }
+      btn.classList.add("wrong");
+      // además resaltamos la correcta
+      markCorrectOption();
 
-    // Re-render MathJax en el feedback
-    if (window.MathJax && window.MathJax.typesetPromise) {
-      window.MathJax.typesetPromise([feedback]).catch(() => {});
+      feedback.className = "feedback bad";
+      feedback.innerHTML = `❌ <strong>Incorrecto.</strong> ${explainHTML}
+        <div style="margin-top:10px;"><strong>Respuesta correcta:</strong> \\(f^{-1}(x)=\\dfrac{x+7}{3}\\).</div>`;
+      renderMath(feedback);
     }
   });
 
   retryBtn.addEventListener("click", () => {
     lockOptions(false);
+    clearMarks();
     feedback.className = "feedback";
     feedback.textContent = "Haz clic en una respuesta.";
-
-    if (window.MathJax && window.MathJax.typesetPromise) {
-      window.MathJax.typesetPromise([document.getElementById("quizInv")]).catch(() => {});
-    }
   });
 })();
 </script>
