@@ -22,8 +22,24 @@ main{padding:22px 0 60px}
 .card{border:1px solid var(--border);border-radius:18px;padding:22px;background:rgba(255,255,255,.03);box-shadow:var(--shadow)}
 .muted{color:var(--muted)}
 
-/* --- Estilos del mini-quiz --- */
-.quiz{margin-top:10px;border:1px solid var(--border);border-radius:14px;padding:14px;background:rgba(255,255,255,.02)}
+/* --- Bloque GeoGebra --- */
+.ggwrap{margin-top:10px;border:1px solid var(--border);border-radius:16px;overflow:hidden;background:rgba(255,255,255,.02);box-shadow:var(--shadow)}
+.gghead{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;padding:12px 14px;border-bottom:1px solid var(--border)}
+.select, .btn{
+  border:1px solid var(--border);
+  background:rgba(255,255,255,.03);
+  color:var(--text);
+  padding:10px 12px;
+  border-radius:14px;
+}
+.select{min-width:220px}
+.btn{cursor:pointer}
+.btn:hover{background:rgba(122,162,255,.10);border-color:rgba(122,162,255,.35)}
+.small{font-size:13px;color:var(--muted)}
+#ggb-container{width:100%;max-width:980px;height:520px}
+
+/* --- Mini-quiz --- */
+.quiz{margin-top:14px;border:1px solid var(--border);border-radius:14px;padding:14px;background:rgba(255,255,255,.02)}
 .quiz h3{margin:0 0 8px;font-size:16px}
 .options{display:grid;gap:10px;margin-top:10px}
 .optionBtn{
@@ -39,17 +55,8 @@ main{padding:22px 0 60px}
 .optionBtn:hover{background:rgba(122,162,255,.10);border-color:rgba(122,162,255,.35)}
 .optionBtn:active{transform: translateY(1px)}
 .optionBtn[disabled]{opacity:.78;cursor:not-allowed}
-
-/* Estados visuales tras responder */
-.optionBtn.correct{
-  border-color: rgba(120,255,150,.45);
-  background: rgba(120,255,150,.10);
-}
-.optionBtn.wrong{
-  border-color: rgba(255,120,120,.45);
-  background: rgba(255,120,120,.08);
-}
-
+.optionBtn.correct{border-color: rgba(120,255,150,.45);background: rgba(120,255,150,.10)}
+.optionBtn.wrong{border-color: rgba(255,120,120,.45);background: rgba(255,120,120,.08)}
 .feedback{
   margin-top:12px;
   padding:12px;
@@ -61,15 +68,6 @@ main{padding:22px 0 60px}
 .feedback.ok{border-color:rgba(120,255,150,.35);background:rgba(120,255,150,.08);color:var(--text)}
 .feedback.bad{border-color:rgba(255,120,120,.35);background:rgba(255,120,120,.08);color:var(--text)}
 .actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
-.btn{
-  border:1px solid var(--border);
-  background:rgba(255,255,255,.03);
-  color:var(--text);
-  padding:10px 12px;
-  border-radius:14px;
-  cursor:pointer;
-}
-.btn:hover{background:rgba(122,162,255,.10);border-color:rgba(122,162,255,.35)}
 </style>
 </head>
 
@@ -104,7 +102,36 @@ main{padding:22px 0 60px}
     <h2>Composición</h2>
     $$(f\circ g)(x)=f(g(x))$$
 
-    <h2>Mini-ejercicio</h2>
+    <h2>Desplazamientos de gráficas (GeoGebra embebido)</h2>
+    <p class="muted">
+      Elige una función base \(f(x)\) y usa los deslizadores \(a\) y \(b\) para ver
+      \(g(x)=f(x-a)+b\).
+    </p>
+
+    <div class="ggwrap">
+      <div class="gghead">
+        <div>
+          <label for="funcSelect" class="small"><strong>Función base \(f(x)\):</strong></label><br/>
+          <select id="funcSelect" class="select">
+            <option value="x^2">Cuadrática: \(x^2\)</option>
+            <option value="x">Lineal: \(x\)</option>
+            <option value="x^3">Cúbica: \(x^3\)</option>
+            <option value="abs(x)">Valor absoluto: \(|x|\)</option>
+            <option value="sin(x)">Trigonométrica: \(\sin(x)\)</option>
+            <option value="exp(x)">Exponencial: \(e^x\)</option>
+            <option value="ln(x)">Logarítmica: \(\ln(x)\) (dominio \(x>0\))</option>
+          </select>
+        </div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;">
+          <button id="resetBtn" class="btn" type="button">Reset \(a,b\)</button>
+          <span id="currentFormula" class="small"></span>
+        </div>
+      </div>
+
+      <div id="ggb-container"></div>
+    </div>
+
+    <h2 style="margin-top:18px;">Mini-ejercicio</h2>
 
     <div class="quiz" id="quizInv">
       <h3>Halla \(f^{-1}(x)\) si \(f(x)=3x-7\).</h3>
@@ -136,6 +163,86 @@ main{padding:22px 0 60px}
   </div>
 </main>
 
+<!-- GeoGebra -->
+<script src="https://www.geogebra.org/apps/deployggb.js"></script>
+<script>
+(function(){
+  const funcSelect = document.getElementById("funcSelect");
+  const resetBtn = document.getElementById("resetBtn");
+  const currentFormula = document.getElementById("currentFormula");
+
+  // Crea el applet
+  const params = {
+    appName: "graphing",
+    width: 980,
+    height: 520,
+    showToolBar: false,
+    showAlgebraInput: false,
+    showMenuBar: false,
+    enableShiftDragZoom: true,
+    enableRightClick: false,
+    useBrowserForJS: true
+  };
+
+  const applet = new GGBApplet(params, true);
+
+  // Helpers
+  function setColors(){
+    // Azul para f, rojo para g
+    applet.evalCommand("SetColor(f,0,0,255)");
+    applet.evalCommand("SetColor(g,255,0,0)");
+    applet.evalCommand("SetLineThickness(f,3)");
+    applet.evalCommand("SetLineThickness(g,4)");
+  }
+
+  function defineSliders(){
+    // a y b en [-5,5] paso 0.1
+    applet.evalCommand("a=0");
+    applet.evalCommand("b=0");
+    applet.evalCommand("SetSliderMin(a,-5)");
+    applet.evalCommand("SetSliderMax(a,5)");
+    applet.evalCommand("SetSliderStep(a,0.1)");
+    applet.evalCommand("SetSliderMin(b,-5)");
+    applet.evalCommand("SetSliderMax(b,5)");
+    applet.evalCommand("SetSliderStep(b,0.1)");
+  }
+
+  function setBaseFunction(expr){
+    // Limpia definiciones previas (redefinir sobrescribe)
+    applet.evalCommand(`f(x)=${expr}`);
+    applet.evalCommand("g(x)=f(x-a)+b");
+    setColors();
+
+    // Mostrar fórmula actual arriba (con MathJax)
+    currentFormula.innerHTML = `\\(f(x)=${expr}\\) &nbsp; y &nbsp; \\(g(x)=f(x-a)+b\\)`;
+    if (window.MathJax && window.MathJax.typesetPromise) {
+      window.MathJax.typesetPromise([currentFormula]).catch(() => {});
+    }
+  }
+
+  window.addEventListener("load", function(){
+    applet.inject("ggb-container");
+
+    // Inicializar una vez inyectado
+    defineSliders();
+    setBaseFunction(funcSelect.value);
+
+    // Ajuste de vista
+    applet.evalCommand("ZoomIn(0,0)"); // suave; no siempre cambia mucho
+  });
+
+  funcSelect.addEventListener("change", () => {
+    setBaseFunction(funcSelect.value);
+  });
+
+  resetBtn.addEventListener("click", () => {
+    applet.evalCommand("a=0");
+    applet.evalCommand("b=0");
+  });
+})();
+</script>
+
+<!-- Mini-quiz + MathJax re-render -->
 <script>
 (function(){
   const optionsBox = document.getElementById("options");
@@ -155,21 +262,15 @@ main{padding:22px 0 60px}
   function lockOptions(lock){
     optionsBox.querySelectorAll("button").forEach(b => b.disabled = lock);
   }
-
   function clearMarks(){
-    optionsBox.querySelectorAll("button").forEach(b => {
-      b.classList.remove("correct","wrong");
-    });
+    optionsBox.querySelectorAll("button").forEach(b => b.classList.remove("correct","wrong"));
   }
-
   function markCorrectOption(){
     const correctBtn = optionsBox.querySelector('button[data-correct="true"]');
     if (correctBtn) correctBtn.classList.add("correct");
   }
-
   function renderMath(el){
     if (window.MathJax && window.MathJax.typesetPromise) {
-      // typesetClear ayuda a evitar “doble render” en algunos casos
       if (window.MathJax.typesetClear) window.MathJax.typesetClear([el]);
       return window.MathJax.typesetPromise([el]).catch(() => {});
     }
@@ -185,17 +286,15 @@ main{padding:22px 0 60px}
     if (isCorrect){
       btn.classList.add("correct");
       feedback.className = "feedback ok";
-      feedback.innerHTML =
-        `✅ <strong>Correcto.</strong> La inversa es \\(f^{-1}(x)=\\dfrac{x+7}{3}\\).`;
+      feedback.innerHTML = `✅ <strong>Correcto.</strong> La inversa es \\(f^{-1}(x)=\\dfrac{x+7}{3}\\).`;
       renderMath(feedback);
     } else {
       btn.classList.add("wrong");
-      // además resaltamos la correcta
       markCorrectOption();
-
       feedback.className = "feedback bad";
-      feedback.innerHTML = `❌ <strong>Incorrecto.</strong> ${explainHTML}
-        <div style="margin-top:10px;"><strong>Respuesta correcta:</strong> \\(f^{-1}(x)=\\dfrac{x+7}{3}\\).</div>`;
+      feedback.innerHTML =
+        `❌ <strong>Incorrecto.</strong> ${explainHTML}
+         <div style="margin-top:10px;"><strong>Respuesta correcta:</strong> \\(f^{-1}(x)=\\dfrac{x+7}{3}\\).</div>`;
       renderMath(feedback);
     }
   });
