@@ -22,21 +22,20 @@ main{padding:22px 0 60px}
 .card{border:1px solid var(--border);border-radius:18px;padding:22px;background:rgba(255,255,255,.03);box-shadow:var(--shadow)}
 .muted{color:var(--muted)}
 
-/* --- Bloque GeoGebra --- */
+/* --- GeoGebra block --- */
 .ggwrap{margin-top:10px;border:1px solid var(--border);border-radius:16px;overflow:hidden;background:rgba(255,255,255,.02);box-shadow:var(--shadow)}
 .gghead{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;padding:12px 14px;border-bottom:1px solid var(--border)}
-.select, .btn{
+.btn{
   border:1px solid var(--border);
   background:rgba(255,255,255,.03);
   color:var(--text);
   padding:10px 12px;
   border-radius:14px;
+  cursor:pointer;
 }
-.select{min-width:220px}
-.btn{cursor:pointer}
 .btn:hover{background:rgba(122,162,255,.10);border-color:rgba(122,162,255,.35)}
 .small{font-size:13px;color:var(--muted)}
-#ggb-container{width:100%;max-width:980px;height:520px}
+#ggb-container{width:100%;height:560px}
 
 /* --- Mini-quiz --- */
 .quiz{margin-top:14px;border:1px solid var(--border);border-radius:14px;padding:14px;background:rgba(255,255,255,.02)}
@@ -102,32 +101,23 @@ main{padding:22px 0 60px}
     <h2>Composición</h2>
     $$(f\circ g)(x)=f(g(x))$$
 
-    <h2>Desplazamientos de gráficas (GeoGebra embebido)</h2>
+    <h2>Graficador (GeoGebra dentro de la página)</h2>
     <p class="muted">
-      Elige una función base \(f(x)\) y usa los deslizadores \(a\) y \(b\) para ver
-      \(g(x)=f(x-a)+b\).
+      Escribe una función en la barra de entrada (por ejemplo <code>f(x)=x^2</code>, <code>sin(x)</code>, <code>ln(x)</code>) y se graficará automáticamente.
+      No necesitas salir de esta página.
     </p>
 
     <div class="ggwrap">
       <div class="gghead">
-        <div>
-          <label for="funcSelect" class="small"><strong>Función base \(f(x)\):</strong></label><br/>
-          <select id="funcSelect" class="select">
-            <option value="x^2">Cuadrática: \(x^2\)</option>
-            <option value="x">Lineal: \(x\)</option>
-            <option value="x^3">Cúbica: \(x^3\)</option>
-            <option value="abs(x)">Valor absoluto: \(|x|\)</option>
-            <option value="sin(x)">Trigonométrica: \(\sin(x)\)</option>
-            <option value="exp(x)">Exponencial: \(e^x\)</option>
-            <option value="ln(x)">Logarítmica: \(\ln(x)\) (dominio \(x>0\))</option>
-          </select>
-        </div>
-        <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;">
-          <button id="resetBtn" class="btn" type="button">Reset \(a,b\)</button>
-          <span id="currentFormula" class="small"></span>
+        <span class="small">
+          Sugerencia: prueba desplazamientos escribiendo <code>g(x)=f(x-2)+3</code> después de definir <code>f(x)</code>.
+        </span>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;">
+          <button class="btn" id="ex1Btn" type="button">Ejemplo: \(f(x)=x^2\)</button>
+          <button class="btn" id="ex2Btn" type="button">Ejemplo: \(f(x)=\sin(x)\)</button>
+          <button class="btn" id="clearBtn" type="button">Limpiar</button>
         </div>
       </div>
-
       <div id="ggb-container"></div>
     </div>
 
@@ -167,17 +157,17 @@ main{padding:22px 0 60px}
 <script src="https://www.geogebra.org/apps/deployggb.js"></script>
 <script>
 (function(){
-  const funcSelect = document.getElementById("funcSelect");
-  const resetBtn = document.getElementById("resetBtn");
-  const currentFormula = document.getElementById("currentFormula");
+  const ex1Btn = document.getElementById("ex1Btn");
+  const ex2Btn = document.getElementById("ex2Btn");
+  const clearBtn = document.getElementById("clearBtn");
 
-  // Crea el applet
+  // Graphing calculator con barra de entrada visible
   const params = {
     appName: "graphing",
     width: 980,
-    height: 520,
-    showToolBar: false,
-    showAlgebraInput: false,
+    height: 560,
+    showToolBar: true,        // barra (para que parezca GeoGebra)
+    showAlgebraInput: true,   // MUY IMPORTANTE: permite escribir funciones
     showMenuBar: false,
     enableShiftDragZoom: true,
     enableRightClick: false,
@@ -186,58 +176,35 @@ main{padding:22px 0 60px}
 
   const applet = new GGBApplet(params, true);
 
-  // Helpers
-  function setColors(){
-    // Azul para f, rojo para g
-    applet.evalCommand("SetColor(f,0,0,255)");
-    applet.evalCommand("SetColor(g,255,0,0)");
-    applet.evalCommand("SetLineThickness(f,3)");
-    applet.evalCommand("SetLineThickness(g,4)");
+  function injectAndInit(){
+    applet.inject("ggb-container");
+
+    // Opcional: dejar un mensaje/instrucción dentro (no siempre visible)
+    // Aquí podemos poner una función por defecto si quieres:
+    // applet.evalCommand("f(x)=x^2");
   }
 
-  function defineSliders(){
-    // a y b en [-5,5] paso 0.1
-    applet.evalCommand("a=0");
-    applet.evalCommand("b=0");
-    applet.evalCommand("SetSliderMin(a,-5)");
-    applet.evalCommand("SetSliderMax(a,5)");
-    applet.evalCommand("SetSliderStep(a,0.1)");
-    applet.evalCommand("SetSliderMin(b,-5)");
-    applet.evalCommand("SetSliderMax(b,5)");
-    applet.evalCommand("SetSliderStep(b,0.1)");
-  }
-
-  function setBaseFunction(expr){
-    // Limpia definiciones previas (redefinir sobrescribe)
-    applet.evalCommand(`f(x)=${expr}`);
-    applet.evalCommand("g(x)=f(x-a)+b");
-    setColors();
-
-    // Mostrar fórmula actual arriba (con MathJax)
-    currentFormula.innerHTML = `\\(f(x)=${expr}\\) &nbsp; y &nbsp; \\(g(x)=f(x-a)+b\\)`;
-    if (window.MathJax && window.MathJax.typesetPromise) {
-      window.MathJax.typesetPromise([currentFormula]).catch(() => {});
-    }
+  function safeEval(cmd){
+    try { applet.evalCommand(cmd); } catch(e) {}
   }
 
   window.addEventListener("load", function(){
-    applet.inject("ggb-container");
-
-    // Inicializar una vez inyectado
-    defineSliders();
-    setBaseFunction(funcSelect.value);
-
-    // Ajuste de vista
-    applet.evalCommand("ZoomIn(0,0)"); // suave; no siempre cambia mucho
+    injectAndInit();
   });
 
-  funcSelect.addEventListener("change", () => {
-    setBaseFunction(funcSelect.value);
+  ex1Btn.addEventListener("click", () => {
+    safeEval("f(x)=x^2");
+    safeEval("g(x)=f(x-2)+3");
   });
 
-  resetBtn.addEventListener("click", () => {
-    applet.evalCommand("a=0");
-    applet.evalCommand("b=0");
+  ex2Btn.addEventListener("click", () => {
+    safeEval("f(x)=sin(x)");
+    safeEval("g(x)=f(x-1)-1");
+  });
+
+  clearBtn.addEventListener("click", () => {
+    // Reinicia todo el applet (limpia construcciones)
+    safeEval("Reset()");
   });
 })();
 </script>
