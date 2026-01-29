@@ -1,0 +1,196 @@
+<!-- =========================
+     QUIZ 5 PREGUNTAS (MAX 5)
+     ========================= -->
+
+<h2>Quiz (5 preguntas, máximo 5 puntos)</h2>
+
+<div class="quiz" id="quiz5">
+  <p class="muted" style="margin:0 0 10px 0;">
+    Responde las 5 preguntas. Al final verás tu puntaje y podrás registrarlo.
+  </p>
+
+  <!-- P1 -->
+  <div class="q" data-q="1">
+    <h3>1) Halla \(f^{-1}(x)\) si \(f(x)=3x-7\).</h3>
+    <div class="options">
+      <button class="optionBtn" type="button" data-correct="false">A) \(3x+7\)</button>
+      <button class="optionBtn" type="button" data-correct="true">B) \(\dfrac{x+7}{3}\)</button>
+      <button class="optionBtn" type="button" data-correct="false">C) \(\dfrac{x-7}{3}\)</button>
+      <button class="optionBtn" type="button" data-correct="false">D) \(\dfrac{7-x}{3}\)</button>
+    </div>
+    <div class="feedback">Selecciona una opción.</div>
+  </div>
+
+  <!-- P2 -->
+  <div class="q" data-q="2" style="margin-top:14px;">
+    <h3>2) Dominio de \(f(x)=\sqrt{2x-1}\)</h3>
+    <div class="options">
+      <button class="optionBtn" type="button" data-correct="true">A) \(\left[\tfrac12,\infty\right)\)</button>
+      <button class="optionBtn" type="button" data-correct="false">B) \((-\infty,\tfrac12]\)</button>
+      <button class="optionBtn" type="button" data-correct="false">C) \((0,\infty)\)</button>
+      <button class="optionBtn" type="button" data-correct="false">D) \(\mathbb{R}\)</button>
+    </div>
+    <div class="feedback">Selecciona una opción.</div>
+  </div>
+
+  <!-- P3 -->
+  <div class="q" data-q="3" style="margin-top:14px;">
+    <h3>3) Si \(f(x)=x^2\) y \(g(x)=x+1\), entonces \((f\circ g)(x)\) es:</h3>
+    <div class="options">
+      <button class="optionBtn" type="button" data-correct="true">A) \((x+1)^2\)</button>
+      <button class="optionBtn" type="button" data-correct="false">B) \(x^2+1\)</button>
+      <button class="optionBtn" type="button" data-correct="false">C) \(x^2+x\)</button>
+      <button class="optionBtn" type="button" data-correct="false">D) \(x+1\)</button>
+    </div>
+    <div class="feedback">Selecciona una opción.</div>
+  </div>
+
+  <!-- P4 -->
+  <div class="q" data-q="4" style="margin-top:14px;">
+    <h3>4) Si \(h(x)=2x\), entonces \(h(3)\) es:</h3>
+    <div class="options">
+      <button class="optionBtn" type="button" data-correct="false">A) 2</button>
+      <button class="optionBtn" type="button" data-correct="false">B) 3</button>
+      <button class="optionBtn" type="button" data-correct="true">C) 6</button>
+      <button class="optionBtn" type="button" data-correct="false">D) 9</button>
+    </div>
+    <div class="feedback">Selecciona una opción.</div>
+  </div>
+
+  <!-- P5 -->
+  <div class="q" data-q="5" style="margin-top:14px;">
+    <h3>5) Una función es inyectiva si:</h3>
+    <div class="options">
+      <button class="optionBtn" type="button" data-correct="true">A) \(f(x_1)=f(x_2)\Rightarrow x_1=x_2\)</button>
+      <button class="optionBtn" type="button" data-correct="false">B) Su dominio es \(\mathbb{R}\)</button>
+      <button class="optionBtn" type="button" data-correct="false">C) Tiene máximo y mínimo</button>
+      <button class="optionBtn" type="button" data-correct="false">D) Es continua</button>
+    </div>
+    <div class="feedback">Selecciona una opción.</div>
+  </div>
+
+  <!-- RESULTADO FINAL -->
+  <div class="feedback" id="finalBox" style="margin-top:16px;">
+    Responde todas las preguntas para ver tu puntaje.
+  </div>
+
+  <div class="actions">
+    <button class="btn" id="resetQuizBtn" type="button">Reiniciar quiz</button>
+    <a class="btn" id="sendResultBtn" href="#" target="_blank" style="display:none; text-decoration:none;">
+      Registrar resultado
+    </a>
+  </div>
+</div>
+
+<script>
+(function(){
+  const quizEl = document.getElementById("quiz5");
+  const finalBox = document.getElementById("finalBox");
+  const sendBtn = document.getElementById("sendResultBtn");
+  const resetBtn = document.getElementById("resetQuizBtn");
+
+  const MAX_SCORE = 5;
+
+  // ✅ Tu Google Form (base)
+  const BASE_FORM_URL =
+    "https://docs.google.com/forms/d/e/1FAIpQLSc1HgV3oO0OaX7P__3v9GUfTwmWVw_RnmHlOWinRe1mVrYIew/viewform?usp=pp_url";
+
+  // ✅ Tu campo de puntaje (según el link que compartiste)
+  const ENTRY_SCORE = "entry.1350013879";
+
+  let score = 0;
+  const answered = new Set();
+
+  function renderMath(el){
+    if (window.MathJax && window.MathJax.typesetPromise) {
+      if (window.MathJax.typesetClear) window.MathJax.typesetClear([el]);
+      window.MathJax.typesetPromise([el]).catch(()=>{});
+    }
+  }
+
+  function lockQuestion(qEl){
+    qEl.querySelectorAll("button.optionBtn").forEach(b => b.disabled = true);
+  }
+
+  function markButtons(qEl, clickedBtn){
+    const correctBtn = qEl.querySelector('button[data-correct="true"]');
+    if (correctBtn) correctBtn.classList.add("correct");
+    if (clickedBtn.dataset.correct !== "true") clickedBtn.classList.add("wrong");
+  }
+
+  function updateFinal(){
+    const answeredCount = answered.size;
+
+    if (answeredCount < MAX_SCORE){
+      finalBox.className = "feedback";
+      finalBox.innerHTML =
+        `Has respondido <strong>${answeredCount}/${MAX_SCORE}</strong>. ` +
+        `Puntaje actual: <strong>${score}/${MAX_SCORE}</strong>.`;
+      renderMath(finalBox);
+      sendBtn.style.display = "none";
+      return;
+    }
+
+    finalBox.className = "feedback ok";
+    finalBox.innerHTML = `✅ <strong>Quiz terminado.</strong> Tu puntaje final es <strong>${score}/${MAX_SCORE}</strong>.`;
+    renderMath(finalBox);
+
+    // ✅ Prellenar puntaje en tu Form
+    const url = BASE_FORM_URL + `&${ENTRY_SCORE}=` + encodeURIComponent(score);
+
+    sendBtn.href = url;
+    sendBtn.style.display = "inline-block";
+  }
+
+  quizEl.addEventListener("click", (e) => {
+    const btn = e.target.closest("button.optionBtn");
+    if (!btn) return;
+
+    const qEl = btn.closest(".q");
+    const qId = qEl.dataset.q;
+
+    if (answered.has(qId)) return;
+
+    const isCorrect = (btn.dataset.correct === "true");
+    answered.add(qId);
+
+    if (isCorrect) score += 1;
+
+    const fb = qEl.querySelector(".feedback");
+    if (isCorrect){
+      fb.className = "feedback ok";
+      fb.innerHTML = `✅ Correcto.`;
+    } else {
+      fb.className = "feedback bad";
+      fb.innerHTML = `❌ Incorrecto. La opción correcta queda marcada en verde.`;
+    }
+
+    markButtons(qEl, btn);
+    lockQuestion(qEl);
+    renderMath(qEl);
+
+    updateFinal();
+  });
+
+  resetBtn.addEventListener("click", () => {
+    score = 0;
+    answered.clear();
+
+    quizEl.querySelectorAll(".q").forEach(qEl => {
+      qEl.querySelectorAll("button.optionBtn").forEach(b => {
+        b.disabled = false;
+        b.classList.remove("correct","wrong");
+      });
+      const fb = qEl.querySelector(".feedback");
+      fb.className = "feedback";
+      fb.textContent = "Selecciona una opción.";
+    });
+
+    finalBox.className = "feedback";
+    finalBox.textContent = "Responde todas las preguntas para ver tu puntaje.";
+    sendBtn.style.display = "none";
+  });
+
+  updateFinal();
+})();
+</script>
