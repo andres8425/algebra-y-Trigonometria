@@ -3,23 +3,37 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Quiz — Orden en ℝ (GeoGebra)</title>
+<title>Quiz — Números Reales (Recta interactiva)</title>
+
+<!-- MathJax (opcional, por si quieres fórmulas) -->
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script id="MathJax-script" async
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 
 <style>
-:root{--bg:#0b1220;--card:#111a2e;--text:#eaf0ff;--muted:#b8c3e6;--accent:#7aa2ff;--border:rgba(255,255,255,.10);}
-*{box-sizing:border-box}
-body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:var(--bg);color:var(--text);line-height:1.6}
-.container{width:min(1000px,92vw);margin:26px auto}
-.card{background:rgba(17,26,46,.65);border:1px solid var(--border);border-radius:18px;padding:20px}
-.muted{color:var(--muted)}
-#ggbWrap{margin-top:14px;border:1px solid var(--border);border-radius:14px;overflow:hidden;background:rgba(255,255,255,.02)}
-#ggb1{width:100%;height:360px;display:block}
-#loader{
-  padding:14px;
-  border-bottom:1px solid var(--border);
-  display:flex;gap:10px;align-items:center;justify-content:space-between;
+:root{
+  --bg:#0b1220; --card:#111a2e; --text:#eaf0ff; --muted:#b8c3e6; --accent:#7aa2ff;
+  --border:rgba(255,255,255,.10); --shadow:0 10px 30px rgba(0,0,0,.35);
 }
-.badge{font-size:13px;color:var(--muted)}
+*{box-sizing:border-box}
+body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:var(--bg);color:var(--text);line-height:1.65}
+.container{width:min(1000px,92vw);margin:24px auto}
+.card{background:rgba(17,26,46,.65);border:1px solid var(--border);border-radius:18px;padding:20px;box-shadow:var(--shadow)}
+h1{margin:0 0 6px 0;font-size:28px}
+.muted{color:var(--muted)}
+
+.panel{
+  margin-top:14px;
+  border:1px solid var(--border);
+  border-radius:16px;
+  background:rgba(255,255,255,.02);
+  overflow:hidden;
+}
+.panelHead{
+  padding:12px 14px;
+  border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;
+}
 .btn{
   border:1px solid var(--border);
   background:rgba(255,255,255,.04);
@@ -30,7 +44,30 @@ body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-ser
 }
 .btn:hover{background:rgba(122,162,255,.14);border-color:rgba(122,162,255,.35)}
 
-.quiz{margin-top:16px;border:1px solid var(--border);border-radius:14px;padding:14px;background:rgba(255,255,255,.02)}
+#stageWrap{padding:12px 14px}
+#stage{
+  width:100%;
+  height:180px;
+  display:block;
+  background:rgba(255,255,255,.01);
+  border-radius:14px;
+}
+
+.readout{
+  display:flex;flex-wrap:wrap;gap:10px;
+  margin-top:10px;color:var(--muted);font-size:14px
+}
+.badge{
+  padding:6px 10px;border:1px solid var(--border);border-radius:999px;background:rgba(255,255,255,.03)
+}
+
+.quiz{
+  margin-top:16px;
+  border:1px solid var(--border);
+  border-radius:14px;
+  padding:14px;
+  background:rgba(255,255,255,.02);
+}
 .optionBtn{
   width:100%;
   text-align:left;
@@ -45,241 +82,267 @@ body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-ser
 .optionBtn:hover{background:rgba(122,162,255,.14);border-color:rgba(122,162,255,.35)}
 .optionBtn.correct{background:rgba(120,255,150,.18)}
 .optionBtn.wrong{background:rgba(255,120,120,.18)}
+
 .feedback{
-  margin-top:10px;padding:10px;border-radius:12px;border:1px solid var(--border);
-  background:rgba(255,255,255,.03);color:var(--muted)
+  margin-top:10px;
+  padding:10px;
+  border-radius:12px;
+  border:1px solid var(--border);
+  background:rgba(255,255,255,.03);
+  color:var(--muted);
 }
 .feedback.ok{background:rgba(120,255,150,.12);color:var(--text)}
 .feedback.bad{background:rgba(255,120,120,.12);color:var(--text)}
+.small{font-size:13px;color:var(--muted)}
 </style>
 </head>
 
 <body>
 <div class="container">
   <div class="card">
-    <h1 style="margin:0 0 6px 0;">Bloque 1 — Orden en ℝ</h1>
-    <p class="muted" style="margin:0 0 10px 0;">
-      Arrastra los puntos <strong>A</strong> y <strong>B</strong> sobre la recta numérica y responde.
-      (Solo se usa el eje \(x\).)
+
+    <h1>Bloque 1 — Orden en ℝ</h1>
+    <p class="muted" style="margin:0;">
+      Arrastra los puntos <strong>A</strong> y <strong>B</strong> en la recta numérica.
+      Solo se trabaja sobre el eje \(x\).
     </p>
 
-    <div id="ggbWrap">
-      <div id="loader">
-        <div class="badge" id="statusText">Cargando GeoGebra…</div>
-        <div style="display:flex; gap:10px; flex-wrap:wrap;">
-          <button class="btn" id="retryLoadBtn" type="button">Reintentar carga</button>
-          <button class="btn" id="resetBtn" type="button" disabled>Reiniciar puntos</button>
+    <div class="panel">
+      <div class="panelHead">
+        <div>
+          <strong>Recta numérica interactiva</strong><br/>
+          <span class="small">Idea: \(a&lt;b\) ⇔ A está a la izquierda de B y \(b-a&gt;0\).</span>
+        </div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;">
+          <button class="btn" id="resetBtn" type="button">Reiniciar A y B</button>
         </div>
       </div>
-      <div id="ggb1"></div>
+
+      <div id="stageWrap">
+        <!-- SVG: recta numérica -->
+        <svg id="stage" viewBox="0 0 1000 180" aria-label="Recta numérica">
+          <!-- eje x -->
+          <line x1="60" y1="90" x2="940" y2="90" stroke="rgba(255,255,255,.65)" stroke-width="3"/>
+          <!-- flechas -->
+          <path d="M940,90 l-16,-10 l0,20 z" fill="rgba(255,255,255,.65)"/>
+          <path d="M60,90 l16,-10 l0,20 z" fill="rgba(255,255,255,.65)"/>
+
+          <!-- marcas -->
+          <g id="ticks"></g>
+
+          <!-- segmento AB -->
+          <line id="segAB" x1="0" y1="90" x2="0" y2="90" stroke="rgba(122,162,255,.9)" stroke-width="8" stroke-linecap="round"/>
+
+          <!-- punto A -->
+          <g id="pointA" cursor="grab">
+            <circle r="12" cx="0" cy="90" fill="rgba(255,120,120,.95)"></circle>
+            <text x="0" y="65" text-anchor="middle" fill="white" font-size="18" font-weight="700">A</text>
+          </g>
+
+          <!-- punto B -->
+          <g id="pointB" cursor="grab">
+            <circle r="12" cx="0" cy="90" fill="rgba(120,255,150,.95)"></circle>
+            <text x="0" y="65" text-anchor="middle" fill="white" font-size="18" font-weight="700">B</text>
+          </g>
+        </svg>
+
+        <div class="readout">
+          <span class="badge" id="readA">a = -2.00</span>
+          <span class="badge" id="readB">b = 2.00</span>
+          <span class="badge" id="readD">b − a = 4.00</span>
+        </div>
+      </div>
     </div>
 
     <div class="quiz">
-      <h3 style="margin:0 0 8px 0;">Pregunta</h3>
+      <h3 style="margin:0 0 8px 0;">Pregunta (1 punto)</h3>
       <p style="margin:0;">
-        Si \(A\) está a la izquierda de \(B\), entonces \(b-a\) es:
+        Si el punto \(A\) está a la izquierda de \(B\), entonces el valor de \((b-a)\) es:
       </p>
 
       <button class="optionBtn" data-answer="neg">A) Negativo</button>
       <button class="optionBtn" data-answer="cero">B) Cero</button>
       <button class="optionBtn" data-answer="pos">C) Positivo</button>
+      <button class="optionBtn" data-answer="dep">D) Depende</button>
 
-      <div class="feedback" id="feedback">Espera a que cargue GeoGebra y luego responde.</div>
+      <div class="feedback" id="feedback">Arrastra A y B y luego responde.</div>
     </div>
+
   </div>
 </div>
 
 <script>
 (() => {
-  const statusText = document.getElementById("statusText");
-  const retryLoadBtn = document.getElementById("retryLoadBtn");
+  // Config recta numérica: mapeo de valores reales a píxeles SVG
+  const X_MIN = -8, X_MAX = 8;
+  const PX_LEFT = 60, PX_RIGHT = 940;
+  const Y_AXIS = 90;
+
+  // Estado
+  let a = -2, b = 2;
+  let locked = false;
+
+  // DOM
+  const svg = document.getElementById("stage");
+  const ticks = document.getElementById("ticks");
+  const pointA = document.getElementById("pointA");
+  const pointB = document.getElementById("pointB");
+  const segAB = document.getElementById("segAB");
+  const readA = document.getElementById("readA");
+  const readB = document.getElementById("readB");
+  const readD = document.getElementById("readD");
   const resetBtn = document.getElementById("resetBtn");
   const feedback = document.getElementById("feedback");
   const optionBtns = Array.from(document.querySelectorAll(".optionBtn"));
 
-  let ggb = null;
-  let locked = false;
-  let injectedOnce = false;
+  function clamp(x, lo, hi){ return Math.max(lo, Math.min(hi, x)); }
 
-  function setStatus(msg){ statusText.textContent = msg; }
-
-  function loadDeployGGB(){
-    return new Promise((resolve, reject) => {
-      // Si ya está cargado
-      if (window.GGBApplet) return resolve();
-
-      // Evitar duplicar script
-      const existing = document.querySelector('script[data-ggb="deploy"]');
-      if (existing) {
-        existing.addEventListener("load", () => resolve());
-        existing.addEventListener("error", () => reject(new Error("No se pudo cargar deployggb.js")));
-        return;
-      }
-
-      const s = document.createElement("script");
-      s.src = "https://www.geogebra.org/apps/deployggb.js";
-      s.async = true;
-      s.dataset.ggb = "deploy";
-      s.onload = () => resolve();
-      s.onerror = () => reject(new Error("No se pudo cargar deployggb.js (bloqueo/red)"));
-      document.head.appendChild(s);
-    });
+  function valToPx(x){
+    const t = (x - X_MIN) / (X_MAX - X_MIN);
+    return PX_LEFT + t * (PX_RIGHT - PX_LEFT);
+  }
+  function pxToVal(px){
+    const t = (px - PX_LEFT) / (PX_RIGHT - PX_LEFT);
+    return X_MIN + t * (X_MAX - X_MIN);
   }
 
-  function injectApplet(){
-    if (injectedOnce) {
-      // limpiar contenedor por si quedó un intento fallido
-      document.getElementById("ggb1").innerHTML = "";
-    }
-    injectedOnce = true;
+  function fmt(x){ return (Math.round(x*100)/100).toFixed(2); }
 
-    const params = {
-      appName: "graphing",
-      width: 1000,
-      height: 360,
-
-      showToolBar: false,
-      showAlgebraInput: false,
-      showMenuBar: false,
-      showZoomButtons: false,
-      showResetIcon: false,
-      enableShiftDragZoom: false,
-      enableRightClick: false,
-      useBrowserForJS: true,
-      language: "es",
-
-      appletOnLoad: function(api){
-        ggb = api;
-        setStatus("GeoGebra listo ✅ (arrastra A y B)");
-        resetBtn.disabled = false;
-        feedback.textContent = "Mueve A y B y luego responde.";
-
-        // Config: solo eje x
-        try { api.evalCommand("ShowGrid(false)"); } catch(e){}
-        try { api.evalCommand("ShowAxes(true)"); } catch(e){}
-        try { api.evalCommand("SetAxisVisible(0,true)"); } catch(e){}
-        try { api.evalCommand("SetAxisVisible(1,false)"); } catch(e){}
-
-        // Ventana: usar API (más estable)
-        try { if (typeof api.setCoordSystem === "function") api.setCoordSystem(-8, 8, -1, 3); } catch(e){}
-
-        // Puntos libres en la recta: los forzamos a y=0 con un “truco”
-        // 1) Creamos sliders internos a,b ocultos
-        // 2) Puntos A=(a,0), B=(b,0)
-        // 3) Permitimos arrastrar A y B sobre la recta cambiando a y b con OnUpdate
-        try {
-          api.evalCommand("a=-2");
-          api.evalCommand("b=2");
-          api.evalCommand("A=(a,0)");
-          api.evalCommand("B=(b,0)");
-
-          api.evalCommand("SetPointSize(A,6)");
-          api.evalCommand("SetPointSize(B,6)");
-          api.evalCommand("SetColor(A,255,120,120)");
-          api.evalCommand("SetColor(B,120,255,150)");
-          api.evalCommand("ShowLabel(A,true)");
-          api.evalCommand("ShowLabel(B,true)");
-          api.evalCommand("SetCaption(A,\"A\")");
-          api.evalCommand("SetCaption(B,\"B\")");
-
-          api.evalCommand("s=Segment(A,B)");
-          api.evalCommand("SetLineThickness(s,5)");
-          api.evalCommand("SetColor(s,122,162,255)");
-
-          // Forzar que al arrastrar A/B, se actualicen a/b y vuelvan a y=0
-          // (GeoGebra permite OnUpdate. Si no existiera, no rompe nada.)
-          api.evalCommand("SetValue(a, x(A))");
-          api.evalCommand("SetValue(b, x(B))");
-          api.evalCommand("SetConditionToShowObject(A, true)");
-          api.evalCommand("SetConditionToShowObject(B, true)");
-        } catch(e) {
-          // Si esta parte falla, igual queda el applet cargado; el estudiante puede crear puntos,
-          // pero tú quieres A y B listos, por eso reintentamos.
-          setStatus("GeoGebra cargó, pero faltó inicializar A y B. Pulsa “Reintentar carga”.");
-        }
-      }
-    };
-
-    const app = new GGBApplet(params, true);
-    app.inject("ggb1");
+  function setPoint(g, x){
+    g.setAttribute("transform", `translate(${valToPx(x)},0)`);
   }
 
-  async function start(){
-    setStatus("Cargando GeoGebra…");
-    resetBtn.disabled = true;
-    try{
-      await loadDeployGGB();
-      if (!window.GGBApplet) throw new Error("GGBApplet no disponible");
-      injectApplet();
-    }catch(err){
-      setStatus("No se pudo cargar GeoGebra. (Red/AdBlock). Pulsa “Reintentar carga”.");
-      feedback.className = "feedback bad";
-      feedback.textContent = "Si tienes AdBlock, prueba desactivarlo para geogebra.org o usa modo incógnito.";
+  function update(){
+    // Actualiza posiciones
+    setPoint(pointA, a);
+    setPoint(pointB, b);
+
+    // Segmento AB
+    const x1 = valToPx(a), x2 = valToPx(b);
+    segAB.setAttribute("x1", x1);
+    segAB.setAttribute("x2", x2);
+
+    // Lecturas
+    readA.textContent = `a = ${fmt(a)}`;
+    readB.textContent = `b = ${fmt(b)}`;
+    readD.textContent = `b − a = ${fmt(b - a)}`;
+  }
+
+  function buildTicks(){
+    // marcas enteras de -8 a 8
+    for (let k = X_MIN; k <= X_MAX; k++){
+      const x = valToPx(k);
+      const line = document.createElementNS("http://www.w3.org/2000/svg","line");
+      line.setAttribute("x1", x); line.setAttribute("x2", x);
+      line.setAttribute("y1", Y_AXIS-10); line.setAttribute("y2", Y_AXIS+10);
+      line.setAttribute("stroke", "rgba(255,255,255,.35)");
+      line.setAttribute("stroke-width", "2");
+      ticks.appendChild(line);
+
+      const txt = document.createElementNS("http://www.w3.org/2000/svg","text");
+      txt.setAttribute("x", x);
+      txt.setAttribute("y", Y_AXIS+34);
+      txt.setAttribute("text-anchor", "middle");
+      txt.setAttribute("fill", "rgba(255,255,255,.70)");
+      txt.setAttribute("font-size", "14");
+      txt.textContent = k;
+      ticks.appendChild(txt);
     }
   }
 
   function getCorrect(){
-    if (!ggb) return null;
-    const ax = ggb.getXcoord("A");
-    const bx = ggb.getXcoord("B");
-    if (Math.abs(ax - bx) < 1e-9) return "cero";
-    return (ax < bx) ? "pos" : "neg";
+    const eps = 1e-9;
+    if (Math.abs(a - b) < eps) return "cero";
+    if (a < b) return "pos";
+    return "neg";
   }
+
+  function resetUI(){
+    locked = false;
+    optionBtns.forEach(b => b.classList.remove("correct","wrong"));
+    feedback.className = "feedback";
+    feedback.textContent = "Arrastra A y B y luego responde.";
+  }
+
+  // Drag logic (mouse + touch)
+  function enableDrag(point, getter, setter){
+    let dragging = false;
+
+    function onDown(ev){
+      if (locked) return; // puedes quitar esto si quieres permitir mover aun tras responder
+      dragging = true;
+      point.setAttribute("cursor","grabbing");
+      ev.preventDefault();
+    }
+    function onMove(ev){
+      if (!dragging) return;
+
+      const pt = svg.createSVGPoint();
+      const clientX = ev.touches ? ev.touches[0].clientX : ev.clientX;
+      const clientY = ev.touches ? ev.touches[0].clientY : ev.clientY;
+      pt.x = clientX; pt.y = clientY;
+
+      const ctm = svg.getScreenCTM().inverse();
+      const svgP = pt.matrixTransform(ctm);
+
+      // Convertir x a valor real y mantenerlo en rango
+      const newVal = clamp(pxToVal(svgP.x), X_MIN, X_MAX);
+
+      setter(newVal);
+      update();
+    }
+    function onUp(){
+      if (!dragging) return;
+      dragging = false;
+      point.setAttribute("cursor","grab");
+    }
+
+    point.addEventListener("mousedown", onDown);
+    window.addEventListener("mousemove", onMove);
+    window.addEventListener("mouseup", onUp);
+
+    point.addEventListener("touchstart", onDown, {passive:false});
+    window.addEventListener("touchmove", onMove, {passive:false});
+    window.addEventListener("touchend", onUp);
+  }
+
+  // Inicializar
+  buildTicks();
+  update();
+
+  enableDrag(pointA, () => a, (v) => a = v);
+  enableDrag(pointB, () => b, (v) => b = v);
+
+  resetBtn.addEventListener("click", () => {
+    a = -2; b = 2;
+    resetUI();
+    update();
+  });
 
   optionBtns.forEach(btn => {
     btn.addEventListener("click", () => {
-      if (!ggb) {
-        feedback.className = "feedback bad";
-        feedback.textContent = "GeoGebra aún no está listo. Espera a que cargue y vuelve a intentar.";
-        return;
-      }
       if (locked) return;
 
-      const correct = getCorrect();
-      if (!correct) return;
-
-      locked = true;
-      optionBtns.forEach(b => b.classList.remove("correct","wrong"));
-
       const chosen = btn.dataset.answer;
-      optionBtns.forEach(b => { if (b.dataset.answer === correct) b.classList.add("correct"); });
+      const correct = getCorrect();
+      locked = true;
+
+      // Marcar correcta
+      optionBtns.forEach(b => {
+        if (b.dataset.answer === correct) b.classList.add("correct");
+      });
 
       if (chosen === correct){
         btn.classList.add("correct");
         feedback.className = "feedback ok";
-        feedback.textContent = "✅ Correcto.";
+        feedback.textContent = "✅ Correcto. Si A está a la izquierda de B, entonces a<b y por tanto b−a>0.";
       } else {
         btn.classList.add("wrong");
         feedback.className = "feedback bad";
-        feedback.textContent = "❌ Incorrecto. En la recta, el punto más a la derecha es el mayor; si A está a la izquierda de B entonces b−a > 0.";
+        feedback.textContent = "❌ Incorrecto. En la recta, el punto más a la derecha es el mayor. Si A está a la izquierda de B, entonces b−a es positivo.";
       }
     });
   });
-
-  resetBtn.addEventListener("click", () => {
-    if (!ggb) return;
-    try{
-      ggb.evalCommand("a=-2");
-      ggb.evalCommand("b=2");
-      ggb.evalCommand("A=(a,0)");
-      ggb.evalCommand("B=(b,0)");
-    }catch(e){}
-    locked = false;
-    optionBtns.forEach(b => b.classList.remove("correct","wrong"));
-    feedback.className = "feedback";
-    feedback.textContent = "Mueve A y B y luego responde.";
-  });
-
-  retryLoadBtn.addEventListener("click", () => {
-    locked = false;
-    optionBtns.forEach(b => b.classList.remove("correct","wrong"));
-    feedback.className = "feedback";
-    feedback.textContent = "Reintentando carga…";
-    start();
-  });
-
-  // iniciar
-  start();
 })();
 </script>
 </body>
