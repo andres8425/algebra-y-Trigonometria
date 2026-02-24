@@ -3,9 +3,8 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Explorador — Producto y orden en ℝ</title>
+<title>Explorador — Traslación y orden en ℝ</title>
 
-<!-- MathJax (por si quieres fórmulas) -->
 <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
 <script id="MathJax-script" async
   src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
@@ -14,8 +13,9 @@
 :root{
   --bg:#0b1220; --card:#111a2e; --text:#eaf0ff; --muted:#b8c3e6; --accent:#7aa2ff;
   --border:rgba(255,255,255,.10); --shadow:0 10px 30px rgba(0,0,0,.35);
-  --red: rgba(255,120,120,.95); --green: rgba(120,255,150,.95); --blue: rgba(122,162,255,.9);
+  --red: rgba(255,120,120,.95); --green: rgba(120,255,150,.95);
   --orange: rgba(255,190,110,.95); --violet: rgba(190,160,255,.95);
+  --blue: rgba(122,162,255,.85);
 }
 *{box-sizing:border-box}
 body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:var(--bg);color:var(--text);line-height:1.65}
@@ -24,80 +24,47 @@ body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-ser
 h1{margin:0 0 6px 0;font-size:28px}
 .muted{color:var(--muted)}
 
-.panel{
-  margin-top:14px;border:1px solid var(--border);border-radius:16px;overflow:hidden;
-  background:rgba(255,255,255,.02);box-shadow:var(--shadow)
-}
-.panelHead{
-  padding:12px 14px;border-bottom:1px solid var(--border);
-  display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;
-}
-.btn{
-  border:1px solid var(--border);
-  background:rgba(255,255,255,.04);
-  color:var(--text);
-  padding:10px 12px;
-  border-radius:12px;
-  cursor:pointer;
-}
+.panel{margin-top:14px;border:1px solid var(--border);border-radius:16px;overflow:hidden;background:rgba(255,255,255,.02);box-shadow:var(--shadow)}
+.panelHead{padding:12px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.btn{border:1px solid var(--border);background:rgba(255,255,255,.04);color:var(--text);padding:10px 12px;border-radius:12px;cursor:pointer}
 .btn:hover{background:rgba(122,162,255,.14);border-color:rgba(122,162,255,.35)}
 .small{font-size:13px;color:var(--muted)}
 
 #stageWrap{padding:12px 14px}
-#stage{
-  width:100%;height:230px;display:block;border-radius:14px;overflow:hidden;
-  background:rgba(255,255,255,.01)
-}
-
-.readout{
-  display:flex;flex-wrap:wrap;gap:10px;margin-top:10px;color:var(--muted);font-size:14px
-}
-.badge{
-  padding:6px 10px;border:1px solid var(--border);border-radius:999px;background:rgba(255,255,255,.03)
-}
+#stage{width:100%;height:260px;display:block;border-radius:14px;overflow:hidden;background:rgba(255,255,255,.01)}
 
 .controls{
-  margin-top:12px;
-  display:grid;grid-template-columns: 1fr 180px;gap:12px;align-items:center;
+  margin-top:12px;display:grid;grid-template-columns:1fr 180px;gap:12px;align-items:center
 }
-@media (max-width:720px){ .controls{grid-template-columns:1fr} }
-.sliderBox{
-  border:1px solid var(--border);border-radius:14px;padding:12px;background:rgba(255,255,255,.02)
-}
+@media (max-width:720px){.controls{grid-template-columns:1fr}}
+.sliderBox{border:1px solid var(--border);border-radius:14px;padding:12px;background:rgba(255,255,255,.02)}
 label{display:block;font-size:13px;color:var(--muted);margin-bottom:6px}
 input[type="range"]{width:100%}
-.valueBox{
-  border:1px solid var(--border);border-radius:14px;padding:12px;background:rgba(255,255,255,.02);
-  display:flex;align-items:center;justify-content:center;font-size:18px
-}
-.pattern{
-  margin-top:10px;
-  padding:10px 12px;
-  border:1px solid var(--border);
-  border-radius:14px;
-  background:rgba(255,255,255,.02);
-  color:var(--text);
-}
+.valueBox{border:1px solid var(--border);border-radius:14px;padding:12px;background:rgba(255,255,255,.02);display:flex;align-items:center;justify-content:center;font-size:18px}
+
+.readout{display:flex;flex-wrap:wrap;gap:10px;margin-top:10px;color:var(--muted);font-size:14px}
+.badge{padding:6px 10px;border:1px solid var(--border);border-radius:999px;background:rgba(255,255,255,.03)}
+
+.pattern{margin-top:10px;padding:10px 12px;border:1px solid var(--border);border-radius:14px;background:rgba(255,255,255,.02);color:var(--text)}
 .pattern.ok{background:rgba(120,255,150,.10);border-color:rgba(120,255,150,.30)}
-.pattern.flip{background:rgba(255,120,120,.10);border-color:rgba(255,120,120,.30)}
-.pattern.zero{background:rgba(255,190,110,.10);border-color:rgba(255,190,110,.30)}
+.pattern.eq{background:rgba(255,190,110,.10);border-color:rgba(255,190,110,.30)}
 </style>
 </head>
 
 <body>
 <div class="container">
   <div class="card">
-    <h1>Explorador — Producto y orden en ℝ</h1>
+    <h1>Explorador — Traslación y orden en ℝ</h1>
     <p class="muted" style="margin:0;">
-      Arrastra <b>A</b> y <b>B</b> en la recta. Luego cambia <b>c</b> para ver qué pasa con
-      \(A'=c\cdot a\) y \(B'=c\cdot b\).
+      Arrastra <b>A</b> y <b>B</b> en la recta. Luego cambia <b>k</b> para ver qué pasa con
+      \(A_k=a+k\) y \(B_k=b+k\).
     </p>
 
     <div class="panel">
       <div class="panelHead">
         <div>
-          <strong>Recta numérica</strong><br/>
-          <span class="small">Observa el patrón cuando \(a&lt;b\) y multiplicas por \(c\).</span>
+          <strong>Patrón a descubrir</strong><br/>
+          <span class="small">La traslación por \(k\) no cambia el orden: si \(a&lt;b\), entonces \(a+k&lt;b+k\).</span>
         </div>
         <div style="display:flex;gap:10px;flex-wrap:wrap;">
           <button class="btn" id="resetBtn" type="button">Reiniciar</button>
@@ -105,73 +72,71 @@ input[type="range"]{width:100%}
       </div>
 
       <div id="stageWrap">
-        <svg id="stage" viewBox="0 0 1100 230" aria-label="Recta numérica">
-          <!-- Eje -->
-          <line x1="60" y1="120" x2="1040" y2="120" stroke="rgba(255,255,255,.65)" stroke-width="3"/>
-          <path d="M1040,120 l-18,-11 l0,22 z" fill="rgba(255,255,255,.65)"/>
-          <path d="M60,120 l18,-11 l0,22 z" fill="rgba(255,255,255,.65)"/>
+        <svg id="stage" viewBox="0 0 1100 260" aria-label="Recta numérica">
+          <!-- Eje 1 (original) -->
+          <line x1="60" y1="110" x2="1040" y2="110" stroke="rgba(255,255,255,.65)" stroke-width="3"/>
+          <path d="M1040,110 l-18,-11 l0,22 z" fill="rgba(255,255,255,.65)"/>
+          <path d="M60,110 l18,-11 l0,22 z" fill="rgba(255,255,255,.65)"/>
+
+          <!-- Eje 2 (trasladado) -->
+          <line x1="60" y1="190" x2="1040" y2="190" stroke="rgba(255,255,255,.45)" stroke-width="3"/>
+          <path d="M1040,190 l-18,-11 l0,22 z" fill="rgba(255,255,255,.45)"/>
+          <path d="M60,190 l18,-11 l0,22 z" fill="rgba(255,255,255,.45)"/>
 
           <!-- marcas -->
           <g id="ticks"></g>
 
-          <!-- Segmento original AB -->
-          <line id="segAB" x1="0" y1="120" x2="0" y2="120" stroke="rgba(122,162,255,.85)" stroke-width="10" stroke-linecap="round"/>
+          <!-- Segmentos -->
+          <line id="segAB"  x1="0" y1="110" x2="0" y2="110" stroke="var(--blue)" stroke-width="10" stroke-linecap="round"/>
+          <line id="segAkBk" x1="0" y1="190" x2="0" y2="190" stroke="rgba(190,160,255,.75)" stroke-width="10" stroke-linecap="round"/>
 
-          <!-- Segmento transformado A'B' -->
-          <line id="segA2B2" x1="0" y1="170" x2="0" y2="170" stroke="rgba(190,160,255,.75)" stroke-width="10" stroke-linecap="round"/>
+          <!-- etiquetas -->
+          <text x="60" y="42" fill="rgba(255,255,255,.75)" font-size="14">Original: A, B (y=110)</text>
+          <text x="60" y="74" fill="rgba(255,255,255,.75)" font-size="14">Trasladado: Aₖ=a+k, Bₖ=b+k (y=190)</text>
 
-          <!-- Etiquetas de ejes -->
-          <text x="60" y="40" fill="rgba(255,255,255,.75)" font-size="14">Original (y=120): A, B</text>
-          <text x="60" y="90" fill="rgba(255,255,255,.75)" font-size="14">Transformado (y=170): A' = c·a, B' = c·b</text>
-
-          <!-- Punto A (arrastrable) -->
+          <!-- Puntos originales (arrastrables) -->
           <g id="pointA" cursor="grab">
-            <circle r="12" cx="0" cy="120" fill="var(--red)"></circle>
-            <text x="0" y="95" text-anchor="middle" fill="white" font-size="18" font-weight="700">A</text>
+            <circle r="12" cx="0" cy="110" fill="var(--red)"></circle>
+            <text x="0" y="85" text-anchor="middle" fill="white" font-size="18" font-weight="700">A</text>
           </g>
-
-          <!-- Punto B (arrastrable) -->
           <g id="pointB" cursor="grab">
-            <circle r="12" cx="0" cy="120" fill="var(--green)"></circle>
-            <text x="0" y="95" text-anchor="middle" fill="white" font-size="18" font-weight="700">B</text>
+            <circle r="12" cx="0" cy="110" fill="var(--green)"></circle>
+            <text x="0" y="85" text-anchor="middle" fill="white" font-size="18" font-weight="700">B</text>
           </g>
 
-          <!-- Punto A' (no arrastrable) -->
-          <g id="pointA2">
-            <circle r="11" cx="0" cy="170" fill="var(--orange)"></circle>
-            <text x="0" y="148" text-anchor="middle" fill="white" font-size="16" font-weight="800">A'</text>
+          <!-- Puntos trasladados (no arrastrables) -->
+          <g id="pointAk">
+            <circle r="11" cx="0" cy="190" fill="var(--orange)"></circle>
+            <text x="0" y="165" text-anchor="middle" fill="white" font-size="16" font-weight="800">Aₖ</text>
           </g>
-
-          <!-- Punto B' (no arrastrable) -->
-          <g id="pointB2">
-            <circle r="11" cx="0" cy="170" fill="var(--violet)"></circle>
-            <text x="0" y="148" text-anchor="middle" fill="white" font-size="16" font-weight="800">B'</text>
+          <g id="pointBk">
+            <circle r="11" cx="0" cy="190" fill="var(--violet)"></circle>
+            <text x="0" y="165" text-anchor="middle" fill="white" font-size="16" font-weight="800">Bₖ</text>
           </g>
         </svg>
 
         <div class="controls">
           <div class="sliderBox">
-            <label for="cSlider">Multiplicador \(c\) (negativo invierte el orden)</label>
-            <input id="cSlider" type="range" min="-3" max="3" step="0.1" value="1"/>
-            <div class="small">Tip: prueba \(c=2\), \(c=0.5\), \(c=-1\), \(c=-2\), \(c=0\).</div>
+            <label for="kSlider">Traslación \(k\)</label>
+            <input id="kSlider" type="range" min="-6" max="6" step="0.1" value="0"/>
+            <div class="small">Tip: prueba \(k=3\), \(k=-4\), \(k=0\).</div>
           </div>
           <div class="valueBox">
-            <span>c = <span id="cVal">1.0</span></span>
+            <span>k = <span id="kVal">0.0</span></span>
           </div>
         </div>
 
         <div class="readout">
           <span class="badge" id="readA">a = -2.00</span>
           <span class="badge" id="readB">b = 2.00</span>
-          <span class="badge" id="readC">c = 1.00</span>
-          <span class="badge" id="readAB">Orden: a &lt; b</span>
-          <span class="badge" id="readD">b − a = 4.00</span>
-          <span class="badge" id="readA2">A' = c·a = -2.00</span>
-          <span class="badge" id="readB2">B' = c·b = 2.00</span>
+          <span class="badge" id="readK">k = 0.00</span>
+          <span class="badge" id="readOrder">Orden: a &lt; b</span>
+          <span class="badge" id="readAk">Aₖ = a + k = -2.00</span>
+          <span class="badge" id="readBk">Bₖ = b + k = 2.00</span>
         </div>
 
-        <div id="patternBox" class="pattern">
-          Mueve A y B, cambia c y observa qué pasa con el orden.
+        <div id="patternBox" class="pattern ok">
+          Patrón esperado: sumar el mismo \(k\) a ambos números conserva el orden.
         </div>
       </div>
     </div>
@@ -180,35 +145,33 @@ input[type="range"]{width:100%}
 
 <script>
 (() => {
-  // Rango en la recta
   const X_MIN = -8, X_MAX = 8;
   const PX_LEFT = 60, PX_RIGHT = 1040;
 
-  // Estado
   let a = -2, b = 2;
-  let c = 1;
+  let k = 0;
 
-  // DOM
   const svg = document.getElementById("stage");
   const ticks = document.getElementById("ticks");
+
   const pointA = document.getElementById("pointA");
   const pointB = document.getElementById("pointB");
-  const pointA2 = document.getElementById("pointA2");
-  const pointB2 = document.getElementById("pointB2");
-  const segAB = document.getElementById("segAB");
-  const segA2B2 = document.getElementById("segA2B2");
+  const pointAk = document.getElementById("pointAk");
+  const pointBk = document.getElementById("pointBk");
 
-  const cSlider = document.getElementById("cSlider");
-  const cVal = document.getElementById("cVal");
+  const segAB = document.getElementById("segAB");
+  const segAkBk = document.getElementById("segAkBk");
+
+  const kSlider = document.getElementById("kSlider");
+  const kVal = document.getElementById("kVal");
   const resetBtn = document.getElementById("resetBtn");
 
   const readA = document.getElementById("readA");
   const readB = document.getElementById("readB");
-  const readC = document.getElementById("readC");
-  const readAB = document.getElementById("readAB");
-  const readD = document.getElementById("readD");
-  const readA2 = document.getElementById("readA2");
-  const readB2 = document.getElementById("readB2");
+  const readK = document.getElementById("readK");
+  const readOrder = document.getElementById("readOrder");
+  const readAk = document.getElementById("readAk");
+  const readBk = document.getElementById("readBk");
   const patternBox = document.getElementById("patternBox");
 
   const clamp = (x, lo, hi) => Math.max(lo, Math.min(hi, x));
@@ -222,104 +185,83 @@ input[type="range"]{width:100%}
     const t = (px - PX_LEFT) / (PX_RIGHT - PX_LEFT);
     return X_MIN + t * (X_MAX - X_MIN);
   }
-
-  function setPoint(g, x, y){
-    g.setAttribute("transform", `translate(${valToPx(x)},${y})`);
+  function setPoint(g, x){
+    g.setAttribute("transform", `translate(${valToPx(x)},0)`);
   }
 
   function buildTicks(){
-    for (let k = X_MIN; k <= X_MAX; k++){
-      const x = valToPx(k);
-
+    for (let t = X_MIN; t <= X_MAX; t++){
+      const x = valToPx(t);
       const line = document.createElementNS("http://www.w3.org/2000/svg","line");
       line.setAttribute("x1", x); line.setAttribute("x2", x);
-      line.setAttribute("y1", 110); line.setAttribute("y2", 130);
+      line.setAttribute("y1", 100); line.setAttribute("y2", 120);
       line.setAttribute("stroke", "rgba(255,255,255,.30)");
       line.setAttribute("stroke-width", "2");
       ticks.appendChild(line);
 
+      const line2 = document.createElementNS("http://www.w3.org/2000/svg","line");
+      line2.setAttribute("x1", x); line2.setAttribute("x2", x);
+      line2.setAttribute("y1", 180); line2.setAttribute("y2", 200);
+      line2.setAttribute("stroke", "rgba(255,255,255,.22)");
+      line2.setAttribute("stroke-width", "2");
+      ticks.appendChild(line2);
+
       const txt = document.createElementNS("http://www.w3.org/2000/svg","text");
       txt.setAttribute("x", x);
-      txt.setAttribute("y", 152);
+      txt.setAttribute("y", 145);
       txt.setAttribute("text-anchor", "middle");
       txt.setAttribute("fill", "rgba(255,255,255,.70)");
       txt.setAttribute("font-size", "14");
-      txt.textContent = k;
+      txt.textContent = t;
       ticks.appendChild(txt);
     }
   }
 
-  function updatePattern(a,b,c){
+  function updatePattern(){
     const eps = 1e-10;
-    const rel = (Math.abs(a-b)<eps) ? "=" : (a<b ? "<" : ">");
-    const rel2 = (Math.abs(c*a - c*b)<eps) ? "=" : ((c*a)<(c*b) ? "<" : ">");
-
-    // Interpretación
-    if (Math.abs(c) < eps){
-      patternBox.className = "pattern zero";
-      patternBox.textContent =
-        "Patrón: c = 0 ⇒ A' y B' colapsan en 0 (c·a = c·b = 0).";
+    if (Math.abs(a-b) < eps){
+      patternBox.className = "pattern eq";
+      patternBox.textContent = "Caso especial: si a = b, entonces a+k = b+k (siempre).";
       return;
     }
-
-    if (rel === "="){
-      patternBox.className = "pattern zero";
-      patternBox.textContent =
-        "Patrón: si a = b, entonces A y B coinciden y también A' y B' (para cualquier c).";
-      return;
-    }
-
-    if (c > 0){
-      patternBox.className = "pattern ok";
-      patternBox.textContent =
-        "Patrón: c > 0 ⇒ el orden se conserva (si a < b, entonces c·a < c·b).";
-    } else {
-      patternBox.className = "pattern flip";
-      patternBox.textContent =
-        "Patrón: c < 0 ⇒ el orden se invierte (si a < b, entonces c·a > c·b).";
-    }
+    patternBox.className = "pattern ok";
+    patternBox.textContent = "Patrón: sumar el mismo k a ambos números conserva el orden (no importa si k es positivo o negativo).";
   }
 
   function update(){
-    // transformados
-    const a2 = c*a;
-    const b2 = c*b;
+    const ak = a + k;
+    const bk = b + k;
 
-    // limitar visualización a rango para que no se vaya muy lejos
-    const a2v = clamp(a2, X_MIN, X_MAX);
-    const b2v = clamp(b2, X_MIN, X_MAX);
+    // recorte visual si se sale del rango
+    const akV = clamp(ak, X_MIN, X_MAX);
+    const bkV = clamp(bk, X_MIN, X_MAX);
 
-    // Puntos
-    setPoint(pointA, a, 0);
-    setPoint(pointB, b, 0);
-    setPoint(pointA2, a2v, 0);
-    setPoint(pointB2, b2v, 0);
+    setPoint(pointA, a);
+    setPoint(pointB, b);
+    setPoint(pointAk, akV);
+    setPoint(pointBk, bkV);
 
-    // Segmentos
     segAB.setAttribute("x1", valToPx(a));
     segAB.setAttribute("x2", valToPx(b));
 
-    segA2B2.setAttribute("x1", valToPx(a2v));
-    segA2B2.setAttribute("x2", valToPx(b2v));
+    segAkBk.setAttribute("x1", valToPx(akV));
+    segAkBk.setAttribute("x2", valToPx(bkV));
 
-    // Lecturas
     readA.textContent = `a = ${fmt(a)}`;
     readB.textContent = `b = ${fmt(b)}`;
-    readC.textContent = `c = ${fmt(c)}`;
-    readD.textContent = `b − a = ${fmt(b-a)}`;
+    readK.textContent = `k = ${fmt(k)}`;
 
     const eps = 1e-10;
     const rel = (Math.abs(a-b)<eps) ? "a = b" : (a<b ? "a < b" : "a > b");
-    readAB.textContent = `Orden: ${rel}`;
+    readOrder.textContent = `Orden: ${rel}`;
 
-    readA2.textContent = `A' = c·a = ${fmt(a2)}${(a2!==a2v ? " (recortado en pantalla)" : "")}`;
-    readB2.textContent = `B' = c·b = ${fmt(b2)}${(b2!==b2v ? " (recortado en pantalla)" : "")}`;
+    readAk.textContent = `Aₖ = a + k = ${fmt(ak)}${(ak!==akV ? " (recortado en pantalla)" : "")}`;
+    readBk.textContent = `Bₖ = b + k = ${fmt(bk)}${(bk!==bkV ? " (recortado en pantalla)" : "")}`;
 
-    // patrón
-    updatePattern(a,b,c);
+    updatePattern();
   }
 
-  function enableDrag(point, getVal, setVal){
+  function enableDrag(point, setVal){
     let dragging = false;
 
     function onDown(ev){
@@ -361,22 +303,21 @@ input[type="range"]{width:100%}
   buildTicks();
   update();
 
-  enableDrag(pointA, () => a, (v) => a = v);
-  enableDrag(pointB, () => b, (v) => b = v);
+  enableDrag(pointA, (v) => a = v);
+  enableDrag(pointB, (v) => b = v);
 
-  cSlider.addEventListener("input", () => {
-    c = parseFloat(cSlider.value);
-    cVal.textContent = c.toFixed(1);
+  kSlider.addEventListener("input", () => {
+    k = parseFloat(kSlider.value);
+    kVal.textContent = k.toFixed(1);
     update();
   });
 
   resetBtn.addEventListener("click", () => {
-    a = -2; b = 2; c = 1;
-    cSlider.value = "1";
-    cVal.textContent = "1.0";
+    a = -2; b = 2; k = 0;
+    kSlider.value = "0";
+    kVal.textContent = "0.0";
     update();
   });
-
 })();
 </script>
 </body>
