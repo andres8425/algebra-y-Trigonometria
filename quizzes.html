@@ -3,215 +3,165 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Quiz — Números Reales (GeoGebra)</title>
-
-<!-- MathJax -->
-<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
-<script id="MathJax-script" async
-src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<title>Quiz — Orden en ℝ</title>
 
 <style>
-:root{
-  --bg:#0b1220;--text:#eaf0ff;--muted:#b8c3e6;--accent:#7aa2ff;
-  --border:rgba(255,255,255,.10);--shadow:0 10px 30px rgba(0,0,0,.35);
+body{
+margin:0;
+background:#0b1220;
+color:#eaf0ff;
+font-family:system-ui;
 }
-*{box-sizing:border-box}
-body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:var(--bg);color:var(--text);line-height:1.7}
-.container{width:min(1000px,92vw);margin:0 auto;padding:20px 0}
-.card{border:1px solid var(--border);border-radius:18px;padding:22px;background:rgba(255,255,255,.03);box-shadow:var(--shadow)}
-#ggb1{width:100%;height:360px;background:rgba(255,255,255,.02);border-radius:14px;overflow:hidden}
-
-.quiz{margin-top:15px;border:1px solid var(--border);border-radius:14px;padding:15px;background:rgba(255,255,255,.02)}
+.container{
+width:min(1000px,92vw);
+margin:30px auto;
+}
+.card{
+background:#111a2e;
+padding:25px;
+border-radius:18px;
+}
+#ggb1{
+width:100%;
+height:360px;
+border-radius:14px;
+overflow:hidden;
+}
+.quiz{
+margin-top:20px;
+}
 .optionBtn{
-  display:block;width:100%;margin:8px 0;padding:10px;
-  border-radius:12px;border:1px solid var(--border);
-  background:rgba(255,255,255,.04);color:var(--text);cursor:pointer;text-align:left;
+display:block;
+width:100%;
+margin:8px 0;
+padding:10px;
+border-radius:12px;
+background:#1b2540;
+border:none;
+color:white;
+cursor:pointer;
+text-align:left;
 }
-.optionBtn:hover{background:rgba(122,162,255,.15)}
-.optionBtn.correct{background:rgba(120,255,150,.2)}
-.optionBtn.wrong{background:rgba(255,120,120,.2)}
+.optionBtn:hover{
+background:#273567;
+}
 .feedback{
-  margin-top:10px;padding:10px;border-radius:12px;border:1px solid var(--border);
-  background:rgba(255,255,255,.03);color:var(--muted)
+margin-top:10px;
+padding:10px;
+border-radius:12px;
+background:#1b2540;
 }
-.feedback.ok{background:rgba(120,255,150,.15);color:var(--text)}
-.feedback.bad{background:rgba(255,120,120,.15);color:var(--text)}
-.btn{
-  margin-top:10px;
-  border:1px solid var(--border);
-  background:rgba(255,255,255,.04);
-  color:var(--text);
-  padding:10px 12px;
-  border-radius:12px;
-  cursor:pointer;
-}
-.btn:hover{background:rgba(122,162,255,.15)}
+.correct{background:#1f5f3a !important;}
+.wrong{background:#7a2f2f !important;}
 </style>
 </head>
 
 <body>
+
 <div class="container">
-  <div class="card">
+<div class="card">
 
-    <h1 style="margin:0 0 6px 0;">Bloque 1 — Orden en ℝ</h1>
-    <p style="margin:0 0 14px 0;color:var(--muted);">
-      Idea: \(a &lt; b\) ⇔ A está a la izquierda de B y \(b-a &gt; 0\).
-    </p>
+<h2>Bloque 1 — Orden en ℝ</h2>
+<p>Mueve los puntos A y B sobre la recta.</p>
 
-    <div id="ggb1"></div>
+<div id="ggb1"></div>
 
-    <div class="quiz">
-      <h3 style="margin:0 0 8px 0;">Pregunta</h3>
-      <p style="margin:0;">
-        Si el punto \(A\) está a la izquierda de \(B\), entonces el valor de \((b-a)\) es:
-      </p>
+<div class="quiz">
+<p>Si A está a la izquierda de B, entonces \(b-a\) es:</p>
 
-      <button class="optionBtn" data-answer="neg">A) Negativo</button>
-      <button class="optionBtn" data-answer="cero">B) Cero</button>
-      <button class="optionBtn" data-answer="pos">C) Positivo</button>
-      <button class="optionBtn" data-answer="dep">D) Depende</button>
+<button class="optionBtn" data-answer="neg">A) Negativo</button>
+<button class="optionBtn" data-answer="cero">B) Cero</button>
+<button class="optionBtn" data-answer="pos">C) Positivo</button>
 
-      <div class="feedback" id="feedback">
-        Mueve los sliders \(a\) y \(b\) (o arrastra A y B si te deja) y luego responde.
-      </div>
-
-      <button class="btn" id="resetBtn" type="button">Reiniciar puntos</button>
-    </div>
-
-  </div>
+<div id="feedback" class="feedback">
+Arrastra los puntos y luego responde.
 </div>
 
-<!-- GeoGebra -->
+</div>
+</div>
+</div>
+
 <script src="https://www.geogebra.org/apps/deployggb.js"></script>
 
 <script>
-(function(){
-  const feedback = document.getElementById("feedback");
-  const resetBtn = document.getElementById("resetBtn");
-  const optionBtns = Array.from(document.querySelectorAll(".optionBtn"));
-  let locked = false;
+document.addEventListener("DOMContentLoaded", function(){
 
-  function renderMath(){
-    if (window.MathJax && window.MathJax.typesetPromise) MathJax.typesetPromise();
-  }
+const params = {
+appName: "graphing",
+width: 1000,
+height: 360,
+showToolBar: false,
+showAlgebraInput: false,
+showMenuBar: false,
+showZoomButtons: false,
+enableShiftDragZoom: false,
+enableRightClick: false,
+useBrowserForJS: true,
 
-  const params = {
-    appName: "graphing",
-    width: 1000,
-    height: 360,
+appletOnLoad: function(api){
 
-    // UI minimalista
-    showToolBar: false,
-    showAlgebraInput: false,
-    showMenuBar: false,
-    showZoomButtons: false,
-    showResetIcon: false,
-    enableShiftDragZoom: false,
-    enableRightClick: false,
-    useBrowserForJS: true,
+window.ggb = api;
 
-    appletOnLoad: function(api){
-      window.ggb = api;
+api.setCoordSystem(-8,8,-1,3);
+api.evalCommand("ShowGrid(false)");
+api.evalCommand("SetAxisVisible(0,true)");
+api.evalCommand("SetAxisVisible(1,false)");
 
-      // Solo eje x
-      api.evalCommand("ShowGrid(false)");
-      api.evalCommand("ShowAxes(true)");
-      api.evalCommand("SetAxisVisible(0,true)");   // x
-      api.evalCommand("SetAxisVisible(1,false)");  // y
+api.evalCommand("A=(-2,0)");
+api.evalCommand("B=(2,0)");
 
-      // ✅ AQUÍ ESTÁ LA CORRECCIÓN: usar API (no comando)
-      if (typeof api.setCoordSystem === "function") {
-        api.setCoordSystem(-8, 8, -1, 3);
-      }
+api.evalCommand("SetPointSize(A,6)");
+api.evalCommand("SetPointSize(B,6)");
 
-      // Sliders a y b (movimiento libre)
-      api.evalCommand("a=-2");
-      api.evalCommand("b=2");
-      api.evalCommand("SetSliderMin(a,-8)");
-      api.evalCommand("SetSliderMax(a,8)");
-      api.evalCommand("SetSliderStep(a,0.1)");
-      api.evalCommand("SetSliderMin(b,-8)");
-      api.evalCommand("SetSliderMax(b,8)");
-      api.evalCommand("SetSliderStep(b,0.1)");
+api.evalCommand("SetColor(A,255,120,120)");
+api.evalCommand("SetColor(B,120,255,150)");
 
-      // Mostrar sliders dentro de la vista
-      api.evalCommand("SetVisibleInView(a,1,true)");
-      api.evalCommand("SetVisibleInView(b,1,true)");
-      api.evalCommand("SetCaption(a,\"a\")");
-      api.evalCommand("SetCaption(b,\"b\")");
-      api.evalCommand("ShowLabel(a,true)");
-      api.evalCommand("ShowLabel(b,true)");
+api.evalCommand("SetFixed(A,false)");
+api.evalCommand("SetFixed(B,false)");
 
-      // Puntos sobre la recta
-      api.evalCommand("A=(a,0)");
-      api.evalCommand("B=(b,0)");
-      api.evalCommand("SetPointSize(A,6)");
-      api.evalCommand("SetPointSize(B,6)");
-      api.evalCommand("SetColor(A,255,120,120)");
-      api.evalCommand("SetColor(B,120,255,150)");
-      api.evalCommand("ShowLabel(A,true)");
-      api.evalCommand("ShowLabel(B,true)");
-      api.evalCommand("SetCaption(A,\"A\")");
-      api.evalCommand("SetCaption(B,\"B\")");
+api.evalCommand("SetPointStyle(A,0)");
+api.evalCommand("SetPointStyle(B,0)");
 
-      // Segmento y diferencia
-      api.evalCommand("s=Segment(A,B)");
-      api.evalCommand("SetLineThickness(s,5)");
-      api.evalCommand("SetColor(s,122,162,255)");
-      api.evalCommand("d=b-a");
+api.evalCommand("Segment(A,B)");
+}
+};
 
-      // Textos
-      api.evalCommand('Text("a = " + Round(a,2), (-7,2.5))');
-      api.evalCommand('Text("b = " + Round(b,2), (-7,1.8))');
-      api.evalCommand('Text("b-a = " + Round(d,2), (-7,1.1))');
-    }
-  };
+setTimeout(function(){
+let app = new GGBApplet(params,true);
+app.inject("ggb1");
+},100);
 
-  const app = new GGBApplet(params, true);
-  window.addEventListener("load", () => app.inject("ggb1"));
+const feedback = document.getElementById("feedback");
 
-  function getCorrect(){
-    const a = window.ggb.getValue("a");
-    const b = window.ggb.getValue("b");
-    if (Math.abs(a-b) < 1e-9) return "cero";
-    return (a < b) ? "pos" : "neg";
-  }
+document.querySelectorAll(".optionBtn").forEach(btn=>{
+btn.addEventListener("click", function(){
 
-  optionBtns.forEach(btn => {
-    btn.addEventListener("click", () => {
-      if (locked) return;
-      const correct = getCorrect();
-      locked = true;
+let ax = ggb.getXcoord("A");
+let bx = ggb.getXcoord("B");
 
-      optionBtns.forEach(b => {
-        b.classList.remove("correct","wrong");
-        if (b.dataset.answer === correct) b.classList.add("correct");
-      });
+let correct;
+if(Math.abs(ax-bx)<1e-9) correct="cero";
+else if(ax<bx) correct="pos";
+else correct="neg";
 
-      if (btn.dataset.answer === correct){
-        feedback.className = "feedback ok";
-        feedback.innerHTML = "✅ Correcto.";
-      } else {
-        btn.classList.add("wrong");
-        feedback.className = "feedback bad";
-        feedback.innerHTML = "❌ Incorrecto. Observa: en la recta, el punto más a la derecha tiene mayor valor.";
-      }
-      renderMath();
-    });
-  });
+document.querySelectorAll(".optionBtn").forEach(b=>{
+b.classList.remove("correct","wrong");
+});
 
-  resetBtn.addEventListener("click", () => {
-    if (!window.ggb) return;
-    window.ggb.evalCommand("a=-2");
-    window.ggb.evalCommand("b=2");
-    locked = false;
+if(btn.dataset.answer===correct){
+btn.classList.add("correct");
+feedback.innerHTML="Correcto ✔";
+}
+else{
+btn.classList.add("wrong");
+feedback.innerHTML="Incorrecto. Recuerda: si A está a la izquierda, entonces B−A es positivo.";
+}
 
-    optionBtns.forEach(b => b.classList.remove("correct","wrong"));
-    feedback.className = "feedback";
-    feedback.textContent = "Mueve a y b y responde.";
-  });
+});
+});
 
-})();
+});
 </script>
+
 </body>
 </html>
