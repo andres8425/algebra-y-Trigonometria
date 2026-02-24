@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Quiz — Números Reales (GeoGebra)</title>
+
+<!-- MathJax -->
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+<style>
+:root{--bg:#0b1220;--text:#eaf0ff;--muted:#b8c3e6;--accent:#7aa2ff;--border:rgba(255,255,255,.10);--shadow:0 10px 30px rgba(0,0,0,.35);}
+*{box-sizing:border-box}
+body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:var(--bg);color:var(--text);line-height:1.7}
+a{color:var(--accent);text-decoration:none} a:hover{text-decoration:underline}
+header{border-bottom:1px solid var(--border);background:rgba(255,255,255,.03)}
+.container{width:min(980px,92vw);margin:0 auto;padding:14px 0}
+.nav{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between}
+.pill{display:inline-block;padding:8px 10px;border:1px solid var(--border);border-radius:999px;background:rgba(255,255,255,.04);font-size:13px}
+main{padding:22px 0 60px}
+.card{border:1px solid var(--border);border-radius:18px;padding:22px;background:rgba(255,255,255,.03);box-shadow:var(--shadow)}
+.muted{color:var(--muted)}
+
+.block{margin-top:14px;border:1px solid var(--border);border-radius:16px;overflow:hidden;background:rgba(255,255,255,.02);box-shadow:var(--shadow)}
+.blockHead{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;padding:12px 14px;border-bottom:1px solid var(--border)}
+.small{font-size:13px;color:var(--muted)}
+.btn{
+  border:1px solid var(--border);
+  background:rgba(255,255,255,.03);
+  color:var(--text);
+  padding:10px 12px;
+  border-radius:14px;
+  cursor:pointer;
+}
+.btn:hover{background:rgba(122,162,255,.10);border-color:rgba(122,162,255,.35)}
+#ggb1{width:100%;height:420px}
+
+.quiz{margin-top:12px;border:1px solid var(--border);border-radius:14px;padding:14px;background:rgba(255,255,255,.02)}
+.quiz h3{margin:0 0 8px;font-size:16px}
+.options{display:grid;gap:10px;margin-top:10px}
+.optionBtn{
+  text-align:left;
+  border:1px solid var(--border);
+  background:rgba(255,255,255,.03);
+  color:var(--text);
+  padding:12px 12px;
+  border-radius:14px;
+  cursor:pointer;
+}
+.optionBtn:hover{background:rgba(122,162,255,.10);border-color:rgba(122,162,255,.35)}
+.optionBtn[disabled]{opacity:.78;cursor:not-allowed}
+.optionBtn.correct{border-color: rgba(120,255,150,.45);background: rgba(120,255,150,.10)}
+.optionBtn.wrong{border-color: rgba(255,120,120,.45);background: rgba(255,120,120,.08)}
+
+.feedback{
+  margin-top:12px;
+  padding:12px;
+  border-radius:14px;
+  border:1px solid var(--border);
+  background:rgba(255,255,255,.03);
+  color:var(--muted);
+}
+.feedback.ok{border-color:rgba(120,255,150,.35);background:rgba(120,255,150,.08);color:var(--text)}
+.feedback.bad{border-color:rgba(255,120,120,.35);background:rgba(255,120,120,.08);color:var(--text)}
+.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
+</style>
+</head>
+
+<body>
+<header>
+  <div class="container">
+    <div class="nav">
+      <div>
+        <strong>Quiz — Números Reales (GeoGebra)</strong><br/>
+        <span class="muted">Orden e interpretación geométrica</span>
+      </div>
+      <div style="display:flex;flex-wrap:wrap;gap:10px;">
+        <a class="pill" href="index.html">Inicio</a>
+        <a class="pill" href="quizzes.html">Quizzes</a>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main class="container">
+  <div class="card">
+    <h1 style="margin-top:0;">Laboratorio secuencial</h1>
+    <p class="muted">
+      Mueve libremente los puntos en la recta real y responde la pregunta.
+      Este es el <strong>Bloque 1</strong> (Orden en \(\mathbb{R}\)).
+    </p>
+
+    <!-- =========================
+         BLOQUE 1: ORDEN EN R
+         ========================= -->
+    <div class="block" id="block1">
+      <div class="blockHead">
+        <div>
+          <strong>Bloque 1 — Orden en \(\mathbb{R}\)</strong><br/>
+          <span class="small">Idea: \(a&lt;b\) ⇔ A está a la izquierda de B y \(b-a&gt;0\).</span>
+        </div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;">
+          <button class="btn" id="reset1Btn" type="button">Reiniciar puntos</button>
+        </div>
+      </div>
+
+      <div id="ggb1"></div>
+
+      <div class="quiz" id="q1">
+        <h3>Pregunta 1 (1 punto)</h3>
+        <p style="margin:0;">
+          Si el punto \(A\) está a la izquierda de \(B\), entonces el valor de \((b-a)\) es:
+        </p>
+
+        <div class="options" id="q1Options">
+          <button class="optionBtn" type="button" data-answer="neg">A) Negativo</button>
+          <button class="optionBtn" type="button" data-answer="cero">B) Cero</button>
+          <button class="optionBtn" type="button" data-answer="pos">C) Positivo</button>
+          <button class="optionBtn" type="button" data-answer="dep">D) Depende</button>
+        </div>
+
+        <div class="feedback" id="q1Feedback" aria-live="polite">
+          Primero mueve los puntos y observa los valores de \(a\), \(b\) y \(b-a\).
+        </div>
+
+        <div class="actions">
+          <button class="btn" id="retry1Btn" type="button">Reintentar</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<!-- GeoGebra -->
+<script src="https://www.geogebra.org/apps/deployggb.js"></script>
+<script>
+(function(){
+  // ==========
+  // GEO 1: recta real + puntos A,B + textos a,b,b-a
+  // ==========
+  const params1 = {
+    appName: "graphing",
+    width: 980,
+    height: 420,
+    showToolBar: false,
+    showAlgebraInput: false,
+    showMenuBar: false,
+    enableShiftDragZoom: true,
+    enableRightClick: false,
+    useBrowserForJS: true
+  };
+
+  const app1 = new GGBApplet(params1, true);
+
+  // UI
+  const reset1Btn = document.getElementById("reset1Btn");
+
+  // Quiz UI
+  const q1Options = document.getElementById("q1Options");
+  const q1Feedback = document.getElementById("q1Feedback");
+  const retry1Btn = document.getElementById("retry1Btn");
+
+  // Estado
+  let locked = false;
+
+  function renderMath(el){
+    if (window.MathJax && window.MathJax.typesetPromise) {
+      if (window.MathJax.typesetClear) window.MathJax.typesetClear([el]);
+      window.MathJax.typesetPromise([el]).catch(()=>{});
+    }
+  }
+
+  function safeEval(cmd){
+    try { app1.evalCommand(cmd); } catch(e) {}
+  }
+  function safeSetValue(obj, val){
+    try { app1.setValue(obj, val); } catch(e) {}
+  }
+
+  function initApplet1(){
+    // Vista: usar eje x tipo recta real
+    safeEval("ShowAxes(true)");
+    safeEval("ShowGrid(false)");
+
+    // Puntos sobre el eje x (y=0)
+    safeEval("A=( -2, 0 )");
+    safeEval("B=( 2, 0 )");
+
+    // Restringir a y=0 (mantenerlos en la recta)
+    safeEval("SetConditionToShowObject(A, true)");
+    safeEval("SetConditionToShowObject(B, true)");
+    safeEval("SetFixed(false, A)");
+    safeEval("SetFixed(false, B)");
+
+    // Valores a, b y diferencia (b-a)
+    safeEval("a = x(A)");
+    safeEval("b = x(B)");
+    safeEval("d = b - a");
+
+    // Segmento (opcional) y etiquetas
+    safeEval("s = Segment(A,B)");
+    safeEval("SetLineThickness(s, 5)");
+    safeEval("SetColor(s, 122, 162, 255)");
+
+    safeEval("SetPointSize(A, 6)");
+    safeEval("SetPointSize(B, 6)");
+    safeEval("SetColor(A, 255, 120, 120)");
+    safeEval("SetColor(B, 120, 255, 150)");
+
+    // Textos dinámicos
+    safeEval('t1 = Text("a = " + Round(a,2), ( -6, 3 ))');
+    safeEval('t2 = Text("b = " + Round(b,2), ( -6, 2.2 ))');
+    safeEval('t3 = Text("b - a = " + Round(d,2), ( -6, 1.4 ))');
+    safeEval('t4 = Text("Regla: si A está a la izquierda de B, entonces b-a > 0", ( -6, 0.6 ))');
+
+    // Ajustar ventana
+    safeEval("SetCoordSystem(-8,8,-2,4)");
+
+    // Consejo: mantener A y B cerca del eje
+    // Nota: GeoGebra Graphing permite arrastrar libre; si se salen, el usuario puede regresarlos.
+  }
+
+  function resetApplet1(){
+    safeSetValue("A", -2); // setValue funciona sobre objetos numéricos; para puntos no siempre
+    // Reinicio robusto: redefine los puntos
+    safeEval("A=( -2, 0 )");
+    safeEval("B=( 2, 0 )");
+  }
+
+  window.addEventListener("load", function(){
+    app1.inject("ggb1");
+
+    // Espera mínima a que cargue y luego inicializa comandos
+    setTimeout(initApplet1, 250);
+  });
+
+  reset1Btn.addEventListener("click", () => {
+    resetApplet1();
+    q1Feedback.className = "feedback";
+    q1Feedback.textContent = "Puntos reiniciados. Observa a, b y b-a, y responde.";
+    unlockOptions();
+  });
+
+  // ==========
+  // QUIZ LOGIC
+  // ==========
+  function lockOptions(){
+    locked = true;
+    q1Options.querySelectorAll("button").forEach(b => b.disabled = true);
+  }
+  function unlockOptions(){
+    locked = false;
+    q1Options.querySelectorAll("button").forEach(b => {
+      b.disabled = false;
+      b.classList.remove("correct","wrong");
+    });
+  }
+
+  function getAB(){
+    // Lee valores desde GeoGebra
+    let a = NaN, b = NaN;
+    try { a = parseFloat(app1.getValue("a")); } catch(e) {}
+    try { b = parseFloat(app1.getValue("b")); } catch(e) {}
+    return {a,b};
+  }
+
+  // Evalúa la respuesta respecto a la configuración actual de puntos
+  // Regla: si a<b, la respuesta correcta es "pos"
+  // Si a=b, la correcta es "cero"
+  // Si a>b, la correcta es "neg"
+  function correctAnswerFromState(){
+    const {a,b} = getAB();
+    if (!isFinite(a) || !isFinite(b)) return null;
+    const eps = 1e-9;
+    if (Math.abs(a-b) < eps) return "cero";
+    if (a < b) return "pos";
+    return "neg";
+  }
+
+  q1Options.addEventListener("click", (e) => {
+    const btn = e.target.closest("button");
+    if (!btn || locked) return;
+
+    const chosen = btn.dataset.answer;
+    const correct = correctAnswerFromState();
+
+    // Si por alguna razón aún no hay valores
+    if (!correct){
+      q1Feedback.className = "feedback bad";
+      q1Feedback.textContent = "No pude leer a y b del applet. Intenta mover un punto y vuelve a intentar.";
+      return;
+    }
+
+    lockOptions();
+
+    // Marcar correcta en verde
+    const correctBtn = q1Options.querySelector(`button[data-answer="${correct}"]`);
+    if (correctBtn) correctBtn.classList.add("correct");
+
+    if (chosen === correct){
+      btn.classList.add("correct");
+      q1Feedback.className = "feedback ok";
+      q1Feedback.innerHTML =
+        `✅ <strong>Correcto.</strong> En tu configuración actual, se cumple que ` +
+        (correct==="pos" ? "\\(a<b\\) y por eso \\(b-a>0\\)." :
+         correct==="cero" ? "\\(a=b\\) y por eso \\(b-a=0\\)." :
+         "\\(a>b\\) y por eso \\(b-a<0\\).");
+      renderMath(q1Feedback);
+    } else {
+      btn.classList.add("wrong");
+      q1Feedback.className = "feedback bad";
+      q1Feedback.innerHTML =
+        `❌ <strong>Incorrecto.</strong> Mira la recta: el punto más a la derecha tiene mayor valor. ` +
+        `La diferencia \\(b-a\\) es <strong>positiva</strong> si \\(a<b\\), ` +
+        `<strong>cero</strong> si \\(a=b\\), y <strong>negativa</strong> si \\(a>b\\). ` +
+        `En tu caso, la opción correcta es la marcada en verde.`;
+      renderMath(q1Feedback);
+    }
+  });
+
+  retry1Btn.addEventListener("click", () => {
+    unlockOptions();
+    q1Feedback.className = "feedback";
+    q1Feedback.textContent = "Reintenta: mueve A y B, observa a, b y b-a, y selecciona la opción correcta.";
+  });
+
+})();
+</script>
+
+</body>
+</html>
