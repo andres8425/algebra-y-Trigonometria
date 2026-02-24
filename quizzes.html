@@ -3,9 +3,9 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Quiz — Números Reales (Recta interactiva)</title>
+<title>Explorador — Producto y orden en ℝ</title>
 
-<!-- MathJax (opcional, por si quieres fórmulas) -->
+<!-- MathJax (por si quieres fórmulas) -->
 <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
 <script id="MathJax-script" async
   src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
@@ -14,24 +14,22 @@
 :root{
   --bg:#0b1220; --card:#111a2e; --text:#eaf0ff; --muted:#b8c3e6; --accent:#7aa2ff;
   --border:rgba(255,255,255,.10); --shadow:0 10px 30px rgba(0,0,0,.35);
+  --red: rgba(255,120,120,.95); --green: rgba(120,255,150,.95); --blue: rgba(122,162,255,.9);
+  --orange: rgba(255,190,110,.95); --violet: rgba(190,160,255,.95);
 }
 *{box-sizing:border-box}
 body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:var(--bg);color:var(--text);line-height:1.65}
-.container{width:min(1000px,92vw);margin:24px auto}
+.container{width:min(1050px,92vw);margin:22px auto}
 .card{background:rgba(17,26,46,.65);border:1px solid var(--border);border-radius:18px;padding:20px;box-shadow:var(--shadow)}
 h1{margin:0 0 6px 0;font-size:28px}
 .muted{color:var(--muted)}
 
 .panel{
-  margin-top:14px;
-  border:1px solid var(--border);
-  border-radius:16px;
-  background:rgba(255,255,255,.02);
-  overflow:hidden;
+  margin-top:14px;border:1px solid var(--border);border-radius:16px;overflow:hidden;
+  background:rgba(255,255,255,.02);box-shadow:var(--shadow)
 }
 .panelHead{
-  padding:12px 14px;
-  border-bottom:1px solid var(--border);
+  padding:12px 14px;border-bottom:1px solid var(--border);
   display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;
 }
 .btn{
@@ -43,159 +41,178 @@ h1{margin:0 0 6px 0;font-size:28px}
   cursor:pointer;
 }
 .btn:hover{background:rgba(122,162,255,.14);border-color:rgba(122,162,255,.35)}
+.small{font-size:13px;color:var(--muted)}
 
 #stageWrap{padding:12px 14px}
 #stage{
-  width:100%;
-  height:180px;
-  display:block;
-  background:rgba(255,255,255,.01);
-  border-radius:14px;
+  width:100%;height:230px;display:block;border-radius:14px;overflow:hidden;
+  background:rgba(255,255,255,.01)
 }
 
 .readout{
-  display:flex;flex-wrap:wrap;gap:10px;
-  margin-top:10px;color:var(--muted);font-size:14px
+  display:flex;flex-wrap:wrap;gap:10px;margin-top:10px;color:var(--muted);font-size:14px
 }
 .badge{
   padding:6px 10px;border:1px solid var(--border);border-radius:999px;background:rgba(255,255,255,.03)
 }
 
-.quiz{
-  margin-top:16px;
+.controls{
+  margin-top:12px;
+  display:grid;grid-template-columns: 1fr 180px;gap:12px;align-items:center;
+}
+@media (max-width:720px){ .controls{grid-template-columns:1fr} }
+.sliderBox{
+  border:1px solid var(--border);border-radius:14px;padding:12px;background:rgba(255,255,255,.02)
+}
+label{display:block;font-size:13px;color:var(--muted);margin-bottom:6px}
+input[type="range"]{width:100%}
+.valueBox{
+  border:1px solid var(--border);border-radius:14px;padding:12px;background:rgba(255,255,255,.02);
+  display:flex;align-items:center;justify-content:center;font-size:18px
+}
+.pattern{
+  margin-top:10px;
+  padding:10px 12px;
   border:1px solid var(--border);
   border-radius:14px;
-  padding:14px;
   background:rgba(255,255,255,.02);
-}
-.optionBtn{
-  width:100%;
-  text-align:left;
-  padding:10px 12px;
-  margin:8px 0;
-  border-radius:12px;
-  border:1px solid var(--border);
-  background:rgba(255,255,255,.04);
   color:var(--text);
-  cursor:pointer;
 }
-.optionBtn:hover{background:rgba(122,162,255,.14);border-color:rgba(122,162,255,.35)}
-.optionBtn.correct{background:rgba(120,255,150,.18)}
-.optionBtn.wrong{background:rgba(255,120,120,.18)}
-
-.feedback{
-  margin-top:10px;
-  padding:10px;
-  border-radius:12px;
-  border:1px solid var(--border);
-  background:rgba(255,255,255,.03);
-  color:var(--muted);
-}
-.feedback.ok{background:rgba(120,255,150,.12);color:var(--text)}
-.feedback.bad{background:rgba(255,120,120,.12);color:var(--text)}
-.small{font-size:13px;color:var(--muted)}
+.pattern.ok{background:rgba(120,255,150,.10);border-color:rgba(120,255,150,.30)}
+.pattern.flip{background:rgba(255,120,120,.10);border-color:rgba(255,120,120,.30)}
+.pattern.zero{background:rgba(255,190,110,.10);border-color:rgba(255,190,110,.30)}
 </style>
 </head>
 
 <body>
 <div class="container">
   <div class="card">
-
-    <h1>Bloque 1 — Orden en ℝ</h1>
+    <h1>Explorador — Producto y orden en ℝ</h1>
     <p class="muted" style="margin:0;">
-      Arrastra los puntos <strong>A</strong> y <strong>B</strong> en la recta numérica.
-      Solo se trabaja sobre el eje \(x\).
+      Arrastra <b>A</b> y <b>B</b> en la recta. Luego cambia <b>c</b> para ver qué pasa con
+      \(A'=c\cdot a\) y \(B'=c\cdot b\).
     </p>
 
     <div class="panel">
       <div class="panelHead">
         <div>
-          <strong>Recta numérica interactiva</strong><br/>
-          <span class="small">Idea: \(a&lt;b\) ⇔ A está a la izquierda de B y \(b-a&gt;0\).</span>
+          <strong>Recta numérica</strong><br/>
+          <span class="small">Observa el patrón cuando \(a&lt;b\) y multiplicas por \(c\).</span>
         </div>
         <div style="display:flex;gap:10px;flex-wrap:wrap;">
-          <button class="btn" id="resetBtn" type="button">Reiniciar A y B</button>
+          <button class="btn" id="resetBtn" type="button">Reiniciar</button>
         </div>
       </div>
 
       <div id="stageWrap">
-        <!-- SVG: recta numérica -->
-        <svg id="stage" viewBox="0 0 1000 180" aria-label="Recta numérica">
-          <!-- eje x -->
-          <line x1="60" y1="90" x2="940" y2="90" stroke="rgba(255,255,255,.65)" stroke-width="3"/>
-          <!-- flechas -->
-          <path d="M940,90 l-16,-10 l0,20 z" fill="rgba(255,255,255,.65)"/>
-          <path d="M60,90 l16,-10 l0,20 z" fill="rgba(255,255,255,.65)"/>
+        <svg id="stage" viewBox="0 0 1100 230" aria-label="Recta numérica">
+          <!-- Eje -->
+          <line x1="60" y1="120" x2="1040" y2="120" stroke="rgba(255,255,255,.65)" stroke-width="3"/>
+          <path d="M1040,120 l-18,-11 l0,22 z" fill="rgba(255,255,255,.65)"/>
+          <path d="M60,120 l18,-11 l0,22 z" fill="rgba(255,255,255,.65)"/>
 
           <!-- marcas -->
           <g id="ticks"></g>
 
-          <!-- segmento AB -->
-          <line id="segAB" x1="0" y1="90" x2="0" y2="90" stroke="rgba(122,162,255,.9)" stroke-width="8" stroke-linecap="round"/>
+          <!-- Segmento original AB -->
+          <line id="segAB" x1="0" y1="120" x2="0" y2="120" stroke="rgba(122,162,255,.85)" stroke-width="10" stroke-linecap="round"/>
 
-          <!-- punto A -->
+          <!-- Segmento transformado A'B' -->
+          <line id="segA2B2" x1="0" y1="170" x2="0" y2="170" stroke="rgba(190,160,255,.75)" stroke-width="10" stroke-linecap="round"/>
+
+          <!-- Etiquetas de ejes -->
+          <text x="60" y="40" fill="rgba(255,255,255,.75)" font-size="14">Original (y=120): A, B</text>
+          <text x="60" y="90" fill="rgba(255,255,255,.75)" font-size="14">Transformado (y=170): A' = c·a, B' = c·b</text>
+
+          <!-- Punto A (arrastrable) -->
           <g id="pointA" cursor="grab">
-            <circle r="12" cx="0" cy="90" fill="rgba(255,120,120,.95)"></circle>
-            <text x="0" y="65" text-anchor="middle" fill="white" font-size="18" font-weight="700">A</text>
+            <circle r="12" cx="0" cy="120" fill="var(--red)"></circle>
+            <text x="0" y="95" text-anchor="middle" fill="white" font-size="18" font-weight="700">A</text>
           </g>
 
-          <!-- punto B -->
+          <!-- Punto B (arrastrable) -->
           <g id="pointB" cursor="grab">
-            <circle r="12" cx="0" cy="90" fill="rgba(120,255,150,.95)"></circle>
-            <text x="0" y="65" text-anchor="middle" fill="white" font-size="18" font-weight="700">B</text>
+            <circle r="12" cx="0" cy="120" fill="var(--green)"></circle>
+            <text x="0" y="95" text-anchor="middle" fill="white" font-size="18" font-weight="700">B</text>
+          </g>
+
+          <!-- Punto A' (no arrastrable) -->
+          <g id="pointA2">
+            <circle r="11" cx="0" cy="170" fill="var(--orange)"></circle>
+            <text x="0" y="148" text-anchor="middle" fill="white" font-size="16" font-weight="800">A'</text>
+          </g>
+
+          <!-- Punto B' (no arrastrable) -->
+          <g id="pointB2">
+            <circle r="11" cx="0" cy="170" fill="var(--violet)"></circle>
+            <text x="0" y="148" text-anchor="middle" fill="white" font-size="16" font-weight="800">B'</text>
           </g>
         </svg>
+
+        <div class="controls">
+          <div class="sliderBox">
+            <label for="cSlider">Multiplicador \(c\) (negativo invierte el orden)</label>
+            <input id="cSlider" type="range" min="-3" max="3" step="0.1" value="1"/>
+            <div class="small">Tip: prueba \(c=2\), \(c=0.5\), \(c=-1\), \(c=-2\), \(c=0\).</div>
+          </div>
+          <div class="valueBox">
+            <span>c = <span id="cVal">1.0</span></span>
+          </div>
+        </div>
 
         <div class="readout">
           <span class="badge" id="readA">a = -2.00</span>
           <span class="badge" id="readB">b = 2.00</span>
+          <span class="badge" id="readC">c = 1.00</span>
+          <span class="badge" id="readAB">Orden: a &lt; b</span>
           <span class="badge" id="readD">b − a = 4.00</span>
+          <span class="badge" id="readA2">A' = c·a = -2.00</span>
+          <span class="badge" id="readB2">B' = c·b = 2.00</span>
+        </div>
+
+        <div id="patternBox" class="pattern">
+          Mueve A y B, cambia c y observa qué pasa con el orden.
         </div>
       </div>
     </div>
-
-    <div class="quiz">
-      <h3 style="margin:0 0 8px 0;">Pregunta (1 punto)</h3>
-      <p style="margin:0;">
-        Si el punto \(A\) está a la izquierda de \(B\), entonces el valor de \((b-a)\) es:
-      </p>
-
-      <button class="optionBtn" data-answer="neg">A) Negativo</button>
-      <button class="optionBtn" data-answer="cero">B) Cero</button>
-      <button class="optionBtn" data-answer="pos">C) Positivo</button>
-      <button class="optionBtn" data-answer="dep">D) Depende</button>
-
-      <div class="feedback" id="feedback">Arrastra A y B y luego responde.</div>
-    </div>
-
   </div>
 </div>
 
 <script>
 (() => {
-  // Config recta numérica: mapeo de valores reales a píxeles SVG
+  // Rango en la recta
   const X_MIN = -8, X_MAX = 8;
-  const PX_LEFT = 60, PX_RIGHT = 940;
-  const Y_AXIS = 90;
+  const PX_LEFT = 60, PX_RIGHT = 1040;
 
   // Estado
   let a = -2, b = 2;
-  let locked = false;
+  let c = 1;
 
   // DOM
   const svg = document.getElementById("stage");
   const ticks = document.getElementById("ticks");
   const pointA = document.getElementById("pointA");
   const pointB = document.getElementById("pointB");
+  const pointA2 = document.getElementById("pointA2");
+  const pointB2 = document.getElementById("pointB2");
   const segAB = document.getElementById("segAB");
+  const segA2B2 = document.getElementById("segA2B2");
+
+  const cSlider = document.getElementById("cSlider");
+  const cVal = document.getElementById("cVal");
+  const resetBtn = document.getElementById("resetBtn");
+
   const readA = document.getElementById("readA");
   const readB = document.getElementById("readB");
+  const readC = document.getElementById("readC");
+  const readAB = document.getElementById("readAB");
   const readD = document.getElementById("readD");
-  const resetBtn = document.getElementById("resetBtn");
-  const feedback = document.getElementById("feedback");
-  const optionBtns = Array.from(document.querySelectorAll(".optionBtn"));
+  const readA2 = document.getElementById("readA2");
+  const readB2 = document.getElementById("readB2");
+  const patternBox = document.getElementById("patternBox");
 
-  function clamp(x, lo, hi){ return Math.max(lo, Math.min(hi, x)); }
+  const clamp = (x, lo, hi) => Math.max(lo, Math.min(hi, x));
+  const fmt = (x) => (Math.round(x*100)/100).toFixed(2);
 
   function valToPx(x){
     const t = (x - X_MIN) / (X_MAX - X_MIN);
@@ -206,42 +223,24 @@ h1{margin:0 0 6px 0;font-size:28px}
     return X_MIN + t * (X_MAX - X_MIN);
   }
 
-  function fmt(x){ return (Math.round(x*100)/100).toFixed(2); }
-
-  function setPoint(g, x){
-    g.setAttribute("transform", `translate(${valToPx(x)},0)`);
-  }
-
-  function update(){
-    // Actualiza posiciones
-    setPoint(pointA, a);
-    setPoint(pointB, b);
-
-    // Segmento AB
-    const x1 = valToPx(a), x2 = valToPx(b);
-    segAB.setAttribute("x1", x1);
-    segAB.setAttribute("x2", x2);
-
-    // Lecturas
-    readA.textContent = `a = ${fmt(a)}`;
-    readB.textContent = `b = ${fmt(b)}`;
-    readD.textContent = `b − a = ${fmt(b - a)}`;
+  function setPoint(g, x, y){
+    g.setAttribute("transform", `translate(${valToPx(x)},${y})`);
   }
 
   function buildTicks(){
-    // marcas enteras de -8 a 8
     for (let k = X_MIN; k <= X_MAX; k++){
       const x = valToPx(k);
+
       const line = document.createElementNS("http://www.w3.org/2000/svg","line");
       line.setAttribute("x1", x); line.setAttribute("x2", x);
-      line.setAttribute("y1", Y_AXIS-10); line.setAttribute("y2", Y_AXIS+10);
-      line.setAttribute("stroke", "rgba(255,255,255,.35)");
+      line.setAttribute("y1", 110); line.setAttribute("y2", 130);
+      line.setAttribute("stroke", "rgba(255,255,255,.30)");
       line.setAttribute("stroke-width", "2");
       ticks.appendChild(line);
 
       const txt = document.createElementNS("http://www.w3.org/2000/svg","text");
       txt.setAttribute("x", x);
-      txt.setAttribute("y", Y_AXIS+34);
+      txt.setAttribute("y", 152);
       txt.setAttribute("text-anchor", "middle");
       txt.setAttribute("fill", "rgba(255,255,255,.70)");
       txt.setAttribute("font-size", "14");
@@ -250,26 +249,80 @@ h1{margin:0 0 6px 0;font-size:28px}
     }
   }
 
-  function getCorrect(){
-    const eps = 1e-9;
-    if (Math.abs(a - b) < eps) return "cero";
-    if (a < b) return "pos";
-    return "neg";
+  function updatePattern(a,b,c){
+    const eps = 1e-10;
+    const rel = (Math.abs(a-b)<eps) ? "=" : (a<b ? "<" : ">");
+    const rel2 = (Math.abs(c*a - c*b)<eps) ? "=" : ((c*a)<(c*b) ? "<" : ">");
+
+    // Interpretación
+    if (Math.abs(c) < eps){
+      patternBox.className = "pattern zero";
+      patternBox.textContent =
+        "Patrón: c = 0 ⇒ A' y B' colapsan en 0 (c·a = c·b = 0).";
+      return;
+    }
+
+    if (rel === "="){
+      patternBox.className = "pattern zero";
+      patternBox.textContent =
+        "Patrón: si a = b, entonces A y B coinciden y también A' y B' (para cualquier c).";
+      return;
+    }
+
+    if (c > 0){
+      patternBox.className = "pattern ok";
+      patternBox.textContent =
+        "Patrón: c > 0 ⇒ el orden se conserva (si a < b, entonces c·a < c·b).";
+    } else {
+      patternBox.className = "pattern flip";
+      patternBox.textContent =
+        "Patrón: c < 0 ⇒ el orden se invierte (si a < b, entonces c·a > c·b).";
+    }
   }
 
-  function resetUI(){
-    locked = false;
-    optionBtns.forEach(b => b.classList.remove("correct","wrong"));
-    feedback.className = "feedback";
-    feedback.textContent = "Arrastra A y B y luego responde.";
+  function update(){
+    // transformados
+    const a2 = c*a;
+    const b2 = c*b;
+
+    // limitar visualización a rango para que no se vaya muy lejos
+    const a2v = clamp(a2, X_MIN, X_MAX);
+    const b2v = clamp(b2, X_MIN, X_MAX);
+
+    // Puntos
+    setPoint(pointA, a, 0);
+    setPoint(pointB, b, 0);
+    setPoint(pointA2, a2v, 0);
+    setPoint(pointB2, b2v, 0);
+
+    // Segmentos
+    segAB.setAttribute("x1", valToPx(a));
+    segAB.setAttribute("x2", valToPx(b));
+
+    segA2B2.setAttribute("x1", valToPx(a2v));
+    segA2B2.setAttribute("x2", valToPx(b2v));
+
+    // Lecturas
+    readA.textContent = `a = ${fmt(a)}`;
+    readB.textContent = `b = ${fmt(b)}`;
+    readC.textContent = `c = ${fmt(c)}`;
+    readD.textContent = `b − a = ${fmt(b-a)}`;
+
+    const eps = 1e-10;
+    const rel = (Math.abs(a-b)<eps) ? "a = b" : (a<b ? "a < b" : "a > b");
+    readAB.textContent = `Orden: ${rel}`;
+
+    readA2.textContent = `A' = c·a = ${fmt(a2)}${(a2!==a2v ? " (recortado en pantalla)" : "")}`;
+    readB2.textContent = `B' = c·b = ${fmt(b2)}${(b2!==b2v ? " (recortado en pantalla)" : "")}`;
+
+    // patrón
+    updatePattern(a,b,c);
   }
 
-  // Drag logic (mouse + touch)
-  function enableDrag(point, getter, setter){
+  function enableDrag(point, getVal, setVal){
     let dragging = false;
 
     function onDown(ev){
-      if (locked) return; // puedes quitar esto si quieres permitir mover aun tras responder
       dragging = true;
       point.setAttribute("cursor","grabbing");
       ev.preventDefault();
@@ -285,10 +338,8 @@ h1{margin:0 0 6px 0;font-size:28px}
       const ctm = svg.getScreenCTM().inverse();
       const svgP = pt.matrixTransform(ctm);
 
-      // Convertir x a valor real y mantenerlo en rango
       const newVal = clamp(pxToVal(svgP.x), X_MIN, X_MAX);
-
-      setter(newVal);
+      setVal(newVal);
       update();
     }
     function onUp(){
@@ -306,43 +357,26 @@ h1{margin:0 0 6px 0;font-size:28px}
     window.addEventListener("touchend", onUp);
   }
 
-  // Inicializar
+  // init
   buildTicks();
   update();
 
   enableDrag(pointA, () => a, (v) => a = v);
   enableDrag(pointB, () => b, (v) => b = v);
 
-  resetBtn.addEventListener("click", () => {
-    a = -2; b = 2;
-    resetUI();
+  cSlider.addEventListener("input", () => {
+    c = parseFloat(cSlider.value);
+    cVal.textContent = c.toFixed(1);
     update();
   });
 
-  optionBtns.forEach(btn => {
-    btn.addEventListener("click", () => {
-      if (locked) return;
-
-      const chosen = btn.dataset.answer;
-      const correct = getCorrect();
-      locked = true;
-
-      // Marcar correcta
-      optionBtns.forEach(b => {
-        if (b.dataset.answer === correct) b.classList.add("correct");
-      });
-
-      if (chosen === correct){
-        btn.classList.add("correct");
-        feedback.className = "feedback ok";
-        feedback.textContent = "✅ Correcto. Si A está a la izquierda de B, entonces a<b y por tanto b−a>0.";
-      } else {
-        btn.classList.add("wrong");
-        feedback.className = "feedback bad";
-        feedback.textContent = "❌ Incorrecto. En la recta, el punto más a la derecha es el mayor. Si A está a la izquierda de B, entonces b−a es positivo.";
-      }
-    });
+  resetBtn.addEventListener("click", () => {
+    a = -2; b = 2; c = 1;
+    cSlider.value = "1";
+    cVal.textContent = "1.0";
+    update();
   });
+
 })();
 </script>
 </body>
