@@ -7,306 +7,240 @@
 
 <!-- MathJax -->
 <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
-<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<script id="MathJax-script" async 
+src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 
 <style>
-:root{--bg:#0b1220;--text:#eaf0ff;--muted:#b8c3e6;--accent:#7aa2ff;--border:rgba(255,255,255,.10);--shadow:0 10px 30px rgba(0,0,0,.35);}
+:root{
+--bg:#0b1220;
+--text:#eaf0ff;
+--muted:#b8c3e6;
+--accent:#7aa2ff;
+--border:rgba(255,255,255,.10);
+--shadow:0 10px 30px rgba(0,0,0,.35);
+}
 *{box-sizing:border-box}
-body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:var(--bg);color:var(--text);line-height:1.7}
-a{color:var(--accent);text-decoration:none} a:hover{text-decoration:underline}
-header{border-bottom:1px solid var(--border);background:rgba(255,255,255,.03)}
-.container{width:min(980px,92vw);margin:0 auto;padding:14px 0}
-.nav{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between}
-.pill{display:inline-block;padding:8px 10px;border:1px solid var(--border);border-radius:999px;background:rgba(255,255,255,.04);font-size:13px}
-main{padding:22px 0 60px}
-.card{border:1px solid var(--border);border-radius:18px;padding:22px;background:rgba(255,255,255,.03);box-shadow:var(--shadow)}
-.muted{color:var(--muted)}
-
-.block{margin-top:14px;border:1px solid var(--border);border-radius:16px;overflow:hidden;background:rgba(255,255,255,.02);box-shadow:var(--shadow)}
-.blockHead{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;padding:12px 14px;border-bottom:1px solid var(--border)}
-.small{font-size:13px;color:var(--muted)}
-.btn{
-  border:1px solid var(--border);
-  background:rgba(255,255,255,.03);
-  color:var(--text);
-  padding:10px 12px;
-  border-radius:14px;
-  cursor:pointer;
+body{
+margin:0;
+font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+background:var(--bg);
+color:var(--text);
+line-height:1.7
 }
-.btn:hover{background:rgba(122,162,255,.10);border-color:rgba(122,162,255,.35)}
-
-#ggb1{width:100%;height:360px;background:rgba(255,255,255,.02)}
-
-.quiz{margin-top:12px;border:1px solid var(--border);border-radius:14px;padding:14px;background:rgba(255,255,255,.02)}
-.quiz h3{margin:0 0 8px;font-size:16px}
-.options{display:grid;gap:10px;margin-top:10px}
+.container{
+width:min(1000px,92vw);
+margin:0 auto;
+padding:20px 0
+}
+.card{
+border:1px solid var(--border);
+border-radius:18px;
+padding:22px;
+background:rgba(255,255,255,.03);
+box-shadow:var(--shadow)
+}
+#ggb1{
+width:100%;
+height:360px;
+background:rgba(255,255,255,.02)
+}
+.quiz{
+margin-top:15px;
+border:1px solid var(--border);
+border-radius:14px;
+padding:15px;
+background:rgba(255,255,255,.02)
+}
 .optionBtn{
-  text-align:left;
-  border:1px solid var(--border);
-  background:rgba(255,255,255,.03);
-  color:var(--text);
-  padding:12px 12px;
-  border-radius:14px;
-  cursor:pointer;
+display:block;
+width:100%;
+margin:8px 0;
+padding:10px;
+border-radius:12px;
+border:1px solid var(--border);
+background:rgba(255,255,255,.04);
+color:var(--text);
+cursor:pointer
 }
-.optionBtn:hover{background:rgba(122,162,255,.10);border-color:rgba(122,162,255,.35)}
-.optionBtn[disabled]{opacity:.78;cursor:not-allowed}
-.optionBtn.correct{border-color: rgba(120,255,150,.45);background: rgba(120,255,150,.10)}
-.optionBtn.wrong{border-color: rgba(255,120,120,.45);background: rgba(255,120,120,.08)}
-
+.optionBtn:hover{
+background:rgba(122,162,255,.15)
+}
+.optionBtn.correct{
+background:rgba(120,255,150,.2)
+}
+.optionBtn.wrong{
+background:rgba(255,120,120,.2)
+}
 .feedback{
-  margin-top:12px;
-  padding:12px;
-  border-radius:14px;
-  border:1px solid var(--border);
-  background:rgba(255,255,255,.03);
-  color:var(--muted);
+margin-top:10px;
+padding:10px;
+border-radius:12px;
+border:1px solid var(--border);
+background:rgba(255,255,255,.03);
+color:var(--muted)
 }
-.feedback.ok{border-color:rgba(120,255,150,.35);background:rgba(120,255,150,.08);color:var(--text)}
-.feedback.bad{border-color:rgba(255,120,120,.35);background:rgba(255,120,120,.08);color:var(--text)}
-.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
+.feedback.ok{
+background:rgba(120,255,150,.15);
+color:var(--text)
+}
+.feedback.bad{
+background:rgba(255,120,120,.15);
+color:var(--text)
+}
+button{
+cursor:pointer
+}
 </style>
 </head>
 
 <body>
-<header>
-  <div class="container">
-    <div class="nav">
-      <div>
-        <strong>Quiz — Números Reales (GeoGebra)</strong><br/>
-        <span class="muted">Bloque 1: Orden en \(\mathbb{R}\)</span>
-      </div>
-      <div style="display:flex;flex-wrap:wrap;gap:10px;">
-        <a class="pill" href="index.html">Inicio</a>
-        <a class="pill" href="quizzes.html">Quizzes</a>
-      </div>
-    </div>
-  </div>
-</header>
 
-<main class="container">
-  <div class="card">
-    <h1 style="margin-top:0;">Laboratorio secuencial</h1>
-    <p class="muted">
-      Mueve libremente los controles \(a\) y \(b\) (o los puntos A y B si prefieres) y responde.
-      Se muestra solo la recta numérica (eje \(x\)).
-    </p>
+<div class="container">
+<div class="card">
 
-    <div class="block" id="block1">
-      <div class="blockHead">
-        <div>
-          <strong>Bloque 1 — Orden en \(\mathbb{R}\)</strong><br/>
-          <span class="small">Idea: \(a&lt;b\) ⇔ A está a la izquierda de B y \(b-a&gt;0\).</span>
-        </div>
-        <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;">
-          <button class="btn" id="reset1Btn" type="button">Reiniciar puntos</button>
-        </div>
-      </div>
+<h1>Bloque 1 — Orden en ℝ</h1>
+<p>
+Idea: \(a &lt; b\) ⇔ A está a la izquierda de B y \(b-a &gt; 0\).
+</p>
 
-      <!-- Contenedor GeoGebra -->
-      <div id="ggb1"></div>
+<div id="ggb1"></div>
 
-      <div class="quiz" id="q1">
-        <h3>Pregunta 1 (1 punto)</h3>
-        <p style="margin:0;">
-          Si el punto \(A\) está a la izquierda de \(B\), entonces el valor de \((b-a)\) es:
-        </p>
+<div class="quiz">
+<h3>Pregunta</h3>
+<p>Si el punto \(A\) está a la izquierda de \(B\), entonces el valor de \((b-a)\) es:</p>
 
-        <div class="options" id="q1Options">
-          <button class="optionBtn" type="button" data-answer="neg">A) Negativo</button>
-          <button class="optionBtn" type="button" data-answer="cero">B) Cero</button>
-          <button class="optionBtn" type="button" data-answer="pos">C) Positivo</button>
-          <button class="optionBtn" type="button" data-answer="dep">D) Depende</button>
-        </div>
+<button class="optionBtn" data-answer="neg">A) Negativo</button>
+<button class="optionBtn" data-answer="cero">B) Cero</button>
+<button class="optionBtn" data-answer="pos">C) Positivo</button>
+<button class="optionBtn" data-answer="dep">D) Depende</button>
 
-        <div class="feedback" id="q1Feedback" aria-live="polite">
-          Primero mueve \(a\) y \(b\) y observa los valores de \(a\), \(b\) y \(b-a\).
-        </div>
+<div class="feedback" id="feedback">
+Mueve los valores \(a\) y \(b\) y luego responde.
+</div>
 
-        <div class="actions">
-          <button class="btn" id="retry1Btn" type="button">Reintentar</button>
-        </div>
-      </div>
-    </div>
-  </div>
-</main>
+<button id="resetBtn">Reiniciar puntos</button>
 
+</div>
+</div>
+</div>
+
+<!-- GeoGebra -->
 <script src="https://www.geogebra.org/apps/deployggb.js"></script>
+
 <script>
 (function(){
-  const reset1Btn = document.getElementById("reset1Btn");
-  const q1Options = document.getElementById("q1Options");
-  const q1Feedback = document.getElementById("q1Feedback");
-  const retry1Btn = document.getElementById("retry1Btn");
 
-  let locked = false;
+const feedback = document.getElementById("feedback");
+const resetBtn = document.getElementById("resetBtn");
+let locked = false;
 
-  function renderMath(el){
-    if (window.MathJax && window.MathJax.typesetPromise) {
-      if (window.MathJax.typesetClear) window.MathJax.typesetClear([el]);
-      window.MathJax.typesetPromise([el]).catch(()=>{});
-    }
-  }
+function renderMath(){
+if (window.MathJax && window.MathJax.typesetPromise) {
+MathJax.typesetPromise();
+}
+}
 
-  // ✅ Config GeoGebra minimalista: sin panel izquierdo, sin menú, sin barras
-  const params1 = {
-    appName: "graphing",
-    width: 980,
-    height: 360,
-    showToolBar: false,
-    showAlgebraInput: false,
-    showMenuBar: false,
-    showResetIcon: false,
-    showZoomButtons: false,
-    enableShiftDragZoom: true,
-    enableRightClick: false,
-    useBrowserForJS: true,
+const params = {
+appName: "graphing",
+width: 1000,
+height: 360,
+showToolBar: false,
+showAlgebraInput: false,
+showMenuBar: false,
+showZoomButtons: false,
+showResetIcon: false,
+enableShiftDragZoom: false,
+enableRightClick: false,
+useBrowserForJS: true,
 
-    appletOnLoad: function(api){
-      window.__ggb1 = api;
+appletOnLoad: function(api){
 
-      // Apariencia: recta numérica (solo eje x)
-      api.evalCommand("ShowGrid(false)");
-      api.evalCommand("ShowAxes(true)");
-      api.evalCommand("SetAxisVisible(0,true)");
-      api.evalCommand("SetAxisVisible(1,false)");
-      api.evalCommand("SetCoordSystem(-8,8,-1,3)");
+window.ggb = api;
 
-      // Deslizadores a y b (estos son los que el estudiante moverá libremente)
-      api.evalCommand("a=-2");
-      api.evalCommand("b=2");
-      api.evalCommand("SetSliderMin(a,-8)");
-      api.evalCommand("SetSliderMax(a,8)");
-      api.evalCommand("SetSliderStep(a,0.1)");
-      api.evalCommand("SetSliderMin(b,-8)");
-      api.evalCommand("SetSliderMax(b,8)");
-      api.evalCommand("SetSliderStep(b,0.1)");
+api.evalCommand("ShowGrid(false)");
+api.evalCommand("ShowAxes(true)");
+api.evalCommand("SetAxisVisible(0,true)");
+api.evalCommand("SetAxisVisible(1,false)");
+api.evalCommand("SetCoordSystem(-8,8,-1,3)");
 
-      // Mostrar sliders (sin panel izquierdo, aparecen dentro de la vista)
-      api.evalCommand("SetVisibleInView(a,1,true)");
-      api.evalCommand("SetVisibleInView(b,1,true)");
-      api.evalCommand("SetCaption(a,\"a\")");
-      api.evalCommand("SetCaption(b,\"b\")");
-      api.evalCommand("ShowLabel(a,true)");
-      api.evalCommand("ShowLabel(b,true)");
+api.evalCommand("a=-2");
+api.evalCommand("b=2");
+api.evalCommand("SetSliderMin(a,-8)");
+api.evalCommand("SetSliderMax(a,8)");
+api.evalCommand("SetSliderStep(a,0.1)");
+api.evalCommand("SetSliderMin(b,-8)");
+api.evalCommand("SetSliderMax(b,8)");
+api.evalCommand("SetSliderStep(b,0.1)");
 
-      // Puntos sobre el eje x: A=(a,0), B=(b,0)
-      api.evalCommand("A=(a,0)");
-      api.evalCommand("B=(b,0)");
-      api.evalCommand("SetPointSize(A,6)");
-      api.evalCommand("SetPointSize(B,6)");
-      api.evalCommand("SetColor(A,255,120,120)");
-      api.evalCommand("SetColor(B,120,255,150)");
-      api.evalCommand("ShowLabel(A,true)");
-      api.evalCommand("ShowLabel(B,true)");
-      api.evalCommand("SetCaption(A,\"A\")");
-      api.evalCommand("SetCaption(B,\"B\")");
+api.evalCommand("SetVisibleInView(a,1,true)");
+api.evalCommand("SetVisibleInView(b,1,true)");
 
-      // Segmento y diferencia
-      api.evalCommand("s=Segment(A,B)");
-      api.evalCommand("SetLineThickness(s,5)");
-      api.evalCommand("SetColor(s,122,162,255)");
-      api.evalCommand("d=b-a");
+api.evalCommand("A=(a,0)");
+api.evalCommand("B=(b,0)");
 
-      // Textos
-      api.evalCommand('t1=Text("a = " + Round(a,2), (-7, 2.5))');
-      api.evalCommand('t2=Text("b = " + Round(b,2), (-7, 1.9))');
-      api.evalCommand('t3=Text("b - a = " + Round(d,2), (-7, 1.3))');
-      api.evalCommand('t4=Text("A a la izquierda de B ⇔ a < b ⇔ b-a > 0", (-7, 0.7))');
+api.evalCommand("SetPointSize(A,6)");
+api.evalCommand("SetPointSize(B,6)");
+api.evalCommand("SetColor(A,255,120,120)");
+api.evalCommand("SetColor(B,120,255,150)");
 
-      // ✅ Ajuste extra: evitar que el estudiante “haga zoom” vertical raro
-      // (mantenemos una franja pequeña en y)
-      api.evalCommand("SetCoordSystem(-8,8,-1,3)");
-    }
-  };
+api.evalCommand("s=Segment(A,B)");
+api.evalCommand("SetLineThickness(s,5)");
 
-  const app1 = new GGBApplet(params1, true);
-  window.addEventListener("load", () => app1.inject("ggb1"));
+api.evalCommand("d=b-a");
 
-  function lockOptions(){
-    locked = true;
-    q1Options.querySelectorAll("button").forEach(b => b.disabled = true);
-  }
-  function unlockOptions(){
-    locked = false;
-    q1Options.querySelectorAll("button").forEach(b => {
-      b.disabled = false;
-      b.classList.remove("correct","wrong");
-    });
-  }
+api.evalCommand('Text("a = " + Round(a,2), (-7,2.5))');
+api.evalCommand('Text("b = " + Round(b,2), (-7,1.8))');
+api.evalCommand('Text("b-a = " + Round(d,2), (-7,1.1))');
 
-  function getAB(){
-    const api = window.__ggb1;
-    if (!api) return {a:NaN,b:NaN};
-    let a = NaN, b = NaN;
-    try { a = parseFloat(api.getValue("a")); } catch(e) {}
-    try { b = parseFloat(api.getValue("b")); } catch(e) {}
-    return {a,b};
-  }
+}
+};
 
-  function correctAnswerFromState(){
-    const {a,b} = getAB();
-    if (!isFinite(a) || !isFinite(b)) return null;
-    const eps = 1e-9;
-    if (Math.abs(a-b) < eps) return "cero";
-    if (a < b) return "pos";
-    return "neg";
-  }
+const app = new GGBApplet(params,true);
+window.addEventListener("load",()=>app.inject("ggb1"));
 
-  q1Options.addEventListener("click", (e) => {
-    const btn = e.target.closest("button");
-    if (!btn || locked) return;
+function getCorrect(){
+let a = ggb.getValue("a");
+let b = ggb.getValue("b");
+if(Math.abs(a-b)<1e-9) return "cero";
+if(a<b) return "pos";
+return "neg";
+}
 
-    const chosen = btn.dataset.answer;
-    const correct = correctAnswerFromState();
+document.querySelectorAll(".optionBtn").forEach(btn=>{
+btn.addEventListener("click",()=>{
+if(locked) return;
 
-    if (!correct){
-      q1Feedback.className = "feedback bad";
-      q1Feedback.textContent = "No pude leer a y b. Mueve un poco los sliders y vuelve a intentar.";
-      return;
-    }
+let correct = getCorrect();
+locked = true;
 
-    lockOptions();
+document.querySelectorAll(".optionBtn").forEach(b=>{
+if(b.dataset.answer===correct){
+b.classList.add("correct");
+}
+});
 
-    const correctBtn = q1Options.querySelector(`button[data-answer="${correct}"]`);
-    if (correctBtn) correctBtn.classList.add("correct");
+if(btn.dataset.answer===correct){
+feedback.className="feedback ok";
+feedback.innerHTML="✅ Correcto.";
+}else{
+btn.classList.add("wrong");
+feedback.className="feedback bad";
+feedback.innerHTML="❌ Incorrecto. Observa la posición en la recta.";
+}
+renderMath();
+});
+});
 
-    if (chosen === correct){
-      btn.classList.add("correct");
-      q1Feedback.className = "feedback ok";
-      q1Feedback.innerHTML =
-        `✅ <strong>Correcto.</strong> En tu configuración actual, ` +
-        (correct==="pos" ? "\\(a<b\\) y por eso \\(b-a>0\\)." :
-         correct==="cero" ? "\\(a=b\\) y por eso \\(b-a=0\\)." :
-         "\\(a>b\\) y por eso \\(b-a<0\\).");
-      renderMath(q1Feedback);
-    } else {
-      btn.classList.add("wrong");
-      q1Feedback.className = "feedback bad";
-      q1Feedback.innerHTML =
-        `❌ <strong>Incorrecto.</strong> En la recta, el punto más a la derecha tiene mayor valor. ` +
-        `La diferencia \\(b-a\\) es positiva si \\(a<b\\), cero si \\(a=b\\) y negativa si \\(a>b\\). ` +
-        `En tu caso, la opción correcta es la marcada en verde.`;
-      renderMath(q1Feedback);
-    }
-  });
-
-  retry1Btn.addEventListener("click", () => {
-    unlockOptions();
-    q1Feedback.className = "feedback";
-    q1Feedback.textContent = "Reintenta: mueve a y b, observa b-a y selecciona la opción correcta.";
-  });
-
-  reset1Btn.addEventListener("click", () => {
-    const api = window.__ggb1;
-    if (!api) return;
-    api.evalCommand("a=-2");
-    api.evalCommand("b=2");
-
-    unlockOptions();
-    q1Feedback.className = "feedback";
-    q1Feedback.textContent = "Puntos reiniciados. Observa a, b y b-a, y responde.";
-  });
+resetBtn.addEventListener("click",()=>{
+ggb.evalCommand("a=-2");
+ggb.evalCommand("b=2");
+locked=false;
+document.querySelectorAll(".optionBtn").forEach(b=>{
+b.classList.remove("correct","wrong");
+});
+feedback.className="feedback";
+feedback.innerHTML="Mueve los valores y responde.";
+});
 
 })();
 </script>
