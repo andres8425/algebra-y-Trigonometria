@@ -5,16 +5,28 @@
 <title>Recta interactiva</title>
 <style>
     body {
-        font-family: Arial;
+        font-family: 'Segoe UI', sans-serif;
         text-align: center;
-        background: #f5f5f5;
+        background: #f0f2f5;
     }
+
+    h2 {
+        color: #333;
+    }
+
     canvas {
         background: white;
-        border: 1px solid #ccc;
+        border-radius: 10px;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.1);
     }
+
     .controls {
-        margin-top: 10px;
+        margin-top: 15px;
+        font-size: 18px;
+    }
+
+    input[type="range"] {
+        width: 300px;
     }
 </style>
 </head>
@@ -25,7 +37,7 @@
 <canvas id="canvas" width="500" height="500"></canvas>
 
 <div class="controls">
-    <label>m = <span id="valorM">1</span></label><br>
+    <label><strong>m = <span id="valorM">1</span></strong></label><br>
     <input type="range" id="sliderM" min="-4" max="4" step="0.1" value="1">
 </div>
 
@@ -36,32 +48,88 @@ const ctx = canvas.getContext("2d");
 const slider = document.getElementById("sliderM");
 const valorM = document.getElementById("valorM");
 
-const escala = 40; // píxeles por unidad
+const escala = 40;
 const centroX = canvas.width / 2;
 const centroY = canvas.height / 2;
 
-// Dibujar ejes
-function dibujarEjes() {
-    ctx.strokeStyle = "#aaa";
+// Cuadrícula
+function dibujarCuadricula() {
+    ctx.strokeStyle = "#eee";
     ctx.lineWidth = 1;
 
-    // Eje X
+    for (let i = -5; i <= 5; i++) {
+        // líneas verticales
+        ctx.beginPath();
+        ctx.moveTo(centroX + i * escala, 0);
+        ctx.lineTo(centroX + i * escala, canvas.height);
+        ctx.stroke();
+
+        // líneas horizontales
+        ctx.beginPath();
+        ctx.moveTo(0, centroY + i * escala);
+        ctx.lineTo(canvas.width, centroY + i * escala);
+        ctx.stroke();
+    }
+}
+
+// Ejes principales
+function dibujarEjes() {
+    ctx.strokeStyle = "#000";
+    ctx.lineWidth = 2;
+
+    // eje X
     ctx.beginPath();
     ctx.moveTo(0, centroY);
     ctx.lineTo(canvas.width, centroY);
     ctx.stroke();
 
-    // Eje Y
+    // eje Y
     ctx.beginPath();
     ctx.moveTo(centroX, 0);
     ctx.lineTo(centroX, canvas.height);
     ctx.stroke();
 }
 
-// Dibujar recta
+// Números en los ejes
+function dibujarNumeros() {
+    ctx.fillStyle = "#555";
+    ctx.font = "12px Arial";
+
+    for (let i = -5; i <= 5; i++) {
+        if (i !== 0) {
+            // eje X
+            ctx.fillText(
+                i,
+                centroX + i * escala - 5,
+                centroY + 15
+            );
+
+            // eje Y
+            ctx.fillText(
+                i,
+                centroX - 20,
+                centroY - i * escala + 5
+            );
+        }
+    }
+}
+
+// Etiquetas x e y
+function dibujarEtiquetas() {
+    ctx.fillStyle = "#000";
+    ctx.font = "bold 14px Arial";
+
+    // x
+    ctx.fillText("x", canvas.width - 15, centroY - 10);
+
+    // y
+    ctx.fillText("y", centroX + 10, 15);
+}
+
+// Recta
 function dibujarRecta(m) {
-    ctx.strokeStyle = "blue";
-    ctx.lineWidth = 2;
+    ctx.strokeStyle = "#007bff";
+    ctx.lineWidth = 3;
 
     ctx.beginPath();
 
@@ -91,11 +159,14 @@ function dibujar() {
     let m = parseFloat(slider.value);
     valorM.textContent = m.toFixed(1);
 
+    dibujarCuadricula();
     dibujarEjes();
+    dibujarNumeros();
+    dibujarEtiquetas();
     dibujarRecta(m);
 }
 
-// Evento del slider
+// Evento
 slider.addEventListener("input", dibujar);
 
 // Inicial
