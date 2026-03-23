@@ -1,333 +1,731 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Quiz — Números Reales (GeoGebra)</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Forma punto-pendiente interactiva</title>
+  <style>
+    * { box-sizing: border-box; }
 
-<!-- MathJax -->
-<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
-<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    body {
+      margin: 0;
+      font-family: "Segoe UI", Arial, sans-serif;
+      background: #eef3f7;
+      color: #1f2937;
+    }
 
-<style>
-:root{--bg:#0b1220;--text:#eaf0ff;--muted:#b8c3e6;--accent:#7aa2ff;--border:rgba(255,255,255,.10);--shadow:0 10px 30px rgba(0,0,0,.35);}
-*{box-sizing:border-box}
-body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:var(--bg);color:var(--text);line-height:1.7}
-a{color:var(--accent);text-decoration:none} a:hover{text-decoration:underline}
-header{border-bottom:1px solid var(--border);background:rgba(255,255,255,.03)}
-.container{width:min(980px,92vw);margin:0 auto;padding:14px 0}
-.nav{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between}
-.pill{display:inline-block;padding:8px 10px;border:1px solid var(--border);border-radius:999px;background:rgba(255,255,255,.04);font-size:13px}
-main{padding:22px 0 60px}
-.card{border:1px solid var(--border);border-radius:18px;padding:22px;background:rgba(255,255,255,.03);box-shadow:var(--shadow)}
-.muted{color:var(--muted)}
+    .contenedor {
+      max-width: 1180px;
+      margin: 24px auto;
+      padding: 18px;
+    }
 
-.block{margin-top:14px;border:1px solid var(--border);border-radius:16px;overflow:hidden;background:rgba(255,255,255,.02);box-shadow:var(--shadow)}
-.blockHead{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;padding:12px 14px;border-bottom:1px solid var(--border)}
-.small{font-size:13px;color:var(--muted)}
-.btn{
-  border:1px solid var(--border);
-  background:rgba(255,255,255,.03);
-  color:var(--text);
-  padding:10px 12px;
-  border-radius:14px;
-  cursor:pointer;
-}
-.btn:hover{background:rgba(122,162,255,.10);border-color:rgba(122,162,255,.35)}
-#ggb1{width:100%;height:420px}
+    .panel {
+      background: white;
+      border-radius: 18px;
+      box-shadow: 0 10px 28px rgba(0,0,0,0.08);
+      overflow: hidden;
+      border: 1px solid #dbe5ee;
+    }
 
-.quiz{margin-top:12px;border:1px solid var(--border);border-radius:14px;padding:14px;background:rgba(255,255,255,.02)}
-.quiz h3{margin:0 0 8px;font-size:16px}
-.options{display:grid;gap:10px;margin-top:10px}
-.optionBtn{
-  text-align:left;
-  border:1px solid var(--border);
-  background:rgba(255,255,255,.03);
-  color:var(--text);
-  padding:12px 12px;
-  border-radius:14px;
-  cursor:pointer;
-}
-.optionBtn:hover{background:rgba(122,162,255,.10);border-color:rgba(122,162,255,.35)}
-.optionBtn[disabled]{opacity:.78;cursor:not-allowed}
-.optionBtn.correct{border-color: rgba(120,255,150,.45);background: rgba(120,255,150,.10)}
-.optionBtn.wrong{border-color: rgba(255,120,120,.45);background: rgba(255,120,120,.08)}
+    .encabezado {
+      background: linear-gradient(90deg, #dff3e6 0%, #d6eef9 100%);
+      padding: 22px 24px 16px;
+      border-bottom: 1px solid #d9e6ef;
+    }
 
-.feedback{
-  margin-top:12px;
-  padding:12px;
-  border-radius:14px;
-  border:1px solid var(--border);
-  background:rgba(255,255,255,.03);
-  color:var(--muted);
-}
-.feedback.ok{border-color:rgba(120,255,150,.35);background:rgba(120,255,150,.08);color:var(--text)}
-.feedback.bad{border-color:rgba(255,120,120,.35);background:rgba(255,120,120,.08);color:var(--text)}
-.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
-</style>
+    .encabezado h1 {
+      margin: 0 0 8px;
+      text-align: center;
+      color: #2f7d32;
+      font-size: 2rem;
+      font-weight: 800;
+    }
+
+    .encabezado p {
+      margin: 10px 0;
+      line-height: 1.45;
+      font-size: 1rem;
+    }
+
+    .formula-central {
+      width: fit-content;
+      margin: 16px auto 10px;
+      padding: 12px 28px;
+      background: linear-gradient(180deg, #8fe388, #5cc86c);
+      color: white;
+      font-size: 1.25rem;
+      font-weight: 700;
+      border-radius: 12px;
+      border: 2px solid #3e9e51;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.3);
+    }
+
+    .zona-explicacion {
+      display: grid;
+      grid-template-columns: 1.25fr 0.95fr;
+      gap: 18px;
+      padding: 18px 20px 10px;
+      background: linear-gradient(180deg, #dff1fb 0%, #caeaf8 100%);
+    }
+
+    .lado-izquierdo {
+      position: relative;
+      min-height: 230px;
+      padding: 8px 6px 10px;
+    }
+
+    .texto-mini {
+      font-size: 0.96rem;
+      line-height: 1.45;
+      margin-bottom: 14px;
+    }
+
+    .nube-wrap {
+      position: relative;
+      width: 100%;
+      min-height: 145px;
+      margin-top: 12px;
+    }
+
+    .nube {
+      position: absolute;
+      left: 8px;
+      bottom: 6px;
+      width: 340px;
+      min-height: 92px;
+      background: #7edc73;
+      border: 2px solid #3f8c43;
+      border-radius: 55px;
+      padding: 16px 18px;
+      box-shadow: 0 6px 14px rgba(0,0,0,0.08);
+    }
+
+    .nube::before,
+    .nube::after {
+      content: "";
+      position: absolute;
+      background: #7edc73;
+      border: 2px solid #3f8c43;
+      border-radius: 50%;
+    }
+
+    .nube::before {
+      width: 42px;
+      height: 42px;
+      top: -24px;
+      left: 64px;
+    }
+
+    .nube::after {
+      width: 28px;
+      height: 28px;
+      top: -42px;
+      left: 112px;
+    }
+
+    .burbujas-extra {
+      position: absolute;
+      left: 160px;
+      top: 4px;
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .burbujas-extra span {
+      display: block;
+      border-radius: 50%;
+      background: #7edc73;
+      border: 2px solid #3f8c43;
+    }
+
+    .burbujas-extra span:nth-child(1) { width: 18px; height: 18px; }
+    .burbujas-extra span:nth-child(2) { width: 12px; height: 12px; }
+    .burbujas-extra span:nth-child(3) { width: 8px; height: 8px; }
+
+    .pregunta-box {
+      background: #7de17b;
+      border: 2px solid #49a956;
+      border-radius: 16px;
+      padding: 16px 16px 14px;
+      box-shadow: 0 6px 14px rgba(0,0,0,0.08);
+      min-height: 122px;
+    }
+
+    .pregunta-box h3,
+    .nube h3 {
+      margin: 0 0 10px;
+      font-size: 1rem;
+      color: #14532d;
+    }
+
+    .pregunta-box p,
+    .nube p {
+      margin: 0 0 10px;
+      font-size: 0.95rem;
+      line-height: 1.35;
+    }
+
+    select {
+      width: 100%;
+      padding: 10px 12px;
+      border-radius: 10px;
+      border: 1px solid #94a3b8;
+      font-size: 0.95rem;
+      background: white;
+    }
+
+    .feedback {
+      margin-top: 8px;
+      min-height: 22px;
+      font-size: 0.92rem;
+      font-weight: 600;
+    }
+
+    .ok { color: #15803d; }
+    .bad { color: #b91c1c; }
+
+    .bloque-grafica {
+      padding: 18px 20px 22px;
+      background: #fff;
+    }
+
+    .bloque-grafica h2 {
+      margin: 0 0 6px;
+      color: #1e3a8a;
+      font-size: 1.35rem;
+    }
+
+    .bloque-grafica .sub {
+      margin: 0 0 14px;
+      color: #475569;
+      line-height: 1.45;
+    }
+
+    .grid-grafica {
+      display: grid;
+      grid-template-columns: 540px 1fr;
+      gap: 20px;
+      align-items: start;
+    }
+
+    canvas {
+      background: #fafafa;
+      border: 1px solid #d7dee7;
+      border-radius: 14px;
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,0.6);
+      cursor: grab;
+    }
+
+    .tarjetas {
+      display: grid;
+      gap: 12px;
+    }
+
+    .card {
+      border: 1px solid #dbe3ec;
+      border-radius: 14px;
+      background: #f8fbff;
+      padding: 14px 16px;
+    }
+
+    .card h3 {
+      margin: 0 0 8px;
+      font-size: 1rem;
+      color: #0f172a;
+    }
+
+    .card p {
+      margin: 6px 0;
+      line-height: 1.45;
+    }
+
+    .ecuacion {
+      font-family: "Cambria Math", "Times New Roman", serif;
+      font-size: 1.15rem;
+      background: #eef6ff;
+      border: 1px solid #cfe1f7;
+      border-radius: 10px;
+      padding: 10px 12px;
+      margin-top: 8px;
+      word-break: break-word;
+    }
+
+    .nota {
+      font-size: 0.92rem;
+      color: #475569;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 3px 8px;
+      border-radius: 999px;
+      background: #dbeafe;
+      color: #1d4ed8;
+      font-size: 0.84rem;
+      font-weight: 700;
+    }
+
+    .pie {
+      padding: 0 20px 20px;
+    }
+
+    .pie .sugerencia {
+      background: #f3fdf6;
+      border: 1px solid #cbeed4;
+      color: #166534;
+      padding: 12px 14px;
+      border-radius: 12px;
+      line-height: 1.45;
+    }
+
+    @media (max-width: 1020px) {
+      .grid-grafica {
+        grid-template-columns: 1fr;
+      }
+
+      canvas {
+        width: 100%;
+        height: auto;
+      }
+
+      .zona-explicacion {
+        grid-template-columns: 1fr;
+      }
+
+      .nube {
+        position: relative;
+        width: 100%;
+        left: 0;
+      }
+
+      .burbujas-extra {
+        display: none;
+      }
+    }
+  </style>
 </head>
-
 <body>
-<header>
-  <div class="container">
-    <div class="nav">
-      <div>
-        <strong>Quiz — Números Reales (GeoGebra)</strong><br/>
-        <span class="muted">Orden e interpretación geométrica</span>
-      </div>
-      <div style="display:flex;flex-wrap:wrap;gap:10px;">
-        <a class="pill" href="index.html">Inicio</a>
-        <a class="pill" href="quizzes.html">Quizzes</a>
-      </div>
-    </div>
-  </div>
-</header>
+  <div class="contenedor">
+    <div class="panel">
 
-<main class="container">
-  <div class="card">
-    <h1 style="margin-top:0;">Laboratorio secuencial</h1>
-    <p class="muted">
-      Mueve libremente los puntos en la recta real y responde la pregunta.
-      Este es el <strong>Bloque 1</strong> (Orden en \(\mathbb{R}\)).
-    </p>
+      <div class="encabezado">
+        <h1>Forma punto pendiente</h1>
+        <p>
+          Para encontrar la ecuación de una recta necesitamos información suficiente sobre ella.
+          Una forma muy útil consiste en conocer <strong>un punto</strong> de la recta y además su
+          <strong>pendiente</strong>.
+        </p>
+        <div class="formula-central">y − y₀ = m(x − x₀)</div>
+        <p>
+          Recuerda que la pendiente entre dos puntos \(A(x₁,y₁)\) y \(B(x₂,y₂)\) se calcula como:
+          <strong>m = (y₂ − y₁)/(x₂ − x₁)</strong>.
+        </p>
+      </div>
 
-    <!-- =========================
-         BLOQUE 1: ORDEN EN R
-         ========================= -->
-    <div class="block" id="block1">
-      <div class="blockHead">
-        <div>
-          <strong>Bloque 1 — Orden en \(\mathbb{R}\)</strong><br/>
-          <span class="small">Idea: \(a&lt;b\) ⇔ A está a la izquierda de B y \(b-a&gt;0\).</span>
+      <div class="zona-explicacion">
+        <div class="lado-izquierdo">
+          <div class="texto-mini">
+            Observa la idea general y responde en la nube. La intención es que el estudiante
+            interactúe con la explicación antes de pasar a la gráfica.
+          </div>
+
+          <div class="nube-wrap">
+            <div class="burbujas-extra">
+              <span></span><span></span><span></span>
+            </div>
+
+            <div class="nube">
+              <h3>Pregunta en la nube</h3>
+              <p>
+                Si <strong>no me dan la pendiente</strong>, pero sí me dan
+                <strong>dos puntos</strong> de la recta, entonces primero debo:
+              </p>
+              <select id="selNube">
+                <option value="">-- Selecciona una opción --</option>
+                <option value="correcta">calcular la pendiente con los dos puntos</option>
+                <option value="incorrecta1">sumar las coordenadas x</option>
+                <option value="incorrecta2">buscar el punto medio</option>
+                <option value="incorrecta3">hacer la gráfica sin usar datos</option>
+              </select>
+              <div id="fbNube" class="feedback"></div>
+            </div>
+          </div>
         </div>
-        <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;">
-          <button class="btn" id="reset1Btn" type="button">Reiniciar puntos</button>
+
+        <div class="lado-derecho">
+          <div class="pregunta-box">
+            <h3>Pregunta en la caja derecha</h3>
+            <p>
+              Si ya conozco <strong>un punto</strong> y la <strong>pendiente</strong>, entonces la forma
+              de ecuación que conviene usar es:
+            </p>
+            <select id="selCaja">
+              <option value="">-- Selecciona una opción --</option>
+              <option value="incorrecta1">forma general: Ax + By + C = 0</option>
+              <option value="correcta">forma punto-pendiente: y − y₀ = m(x − x₀)</option>
+              <option value="incorrecta2">teorema de Pitágoras</option>
+              <option value="incorrecta3">desigualdad triangular</option>
+            </select>
+            <div id="fbCaja" class="feedback"></div>
+          </div>
         </div>
       </div>
 
-      <div id="ggb1"></div>
-
-      <div class="quiz" id="q1">
-        <h3>Pregunta 1 (1 punto)</h3>
-        <p style="margin:0;">
-          Si el punto \(A\) está a la izquierda de \(B\), entonces el valor de \((b-a)\) es:
+      <div class="bloque-grafica">
+        <h2>Gráfica interactiva</h2>
+        <p class="sub">
+          Arrastra los puntos <strong>A</strong> y <strong>B</strong> para cambiar la recta. La aplicación
+          actualiza automáticamente la pendiente, la ecuación punto-pendiente y la forma explícita.
         </p>
 
-        <div class="options" id="q1Options">
-          <button class="optionBtn" type="button" data-answer="neg">A) Negativo</button>
-          <button class="optionBtn" type="button" data-answer="cero">B) Cero</button>
-          <button class="optionBtn" type="button" data-answer="pos">C) Positivo</button>
-          <button class="optionBtn" type="button" data-answer="dep">D) Depende</button>
-        </div>
+        <div class="grid-grafica">
+          <canvas id="plano" width="540" height="540"></canvas>
 
-        <div class="feedback" id="q1Feedback" aria-live="polite">
-          Primero mueve los puntos y observa los valores de \(a\), \(b\) y \(b-a\).
-        </div>
+          <div class="tarjetas">
+            <div class="card">
+              <h3>Coordenadas</h3>
+              <p><span class="badge">Punto A</span> <span id="coordA"></span></p>
+              <p><span class="badge">Punto B</span> <span id="coordB"></span></p>
+              <p class="nota">
+                Consejo: evita colocar los puntos con la misma coordenada en x si quieres una
+                pendiente definida.
+              </p>
+            </div>
 
-        <div class="actions">
-          <button class="btn" id="retry1Btn" type="button">Reintentar</button>
+            <div class="card">
+              <h3>Pendiente</h3>
+              <p id="pendienteTexto"></p>
+              <div class="ecuacion" id="pendienteEcuacion"></div>
+            </div>
+
+            <div class="card">
+              <h3>Ecuación punto-pendiente usando A</h3>
+              <div class="ecuacion" id="eqPuntoPendiente"></div>
+            </div>
+
+            <div class="card">
+              <h3>Forma explícita</h3>
+              <div class="ecuacion" id="eqExplicita"></div>
+            </div>
+
+            <div class="card">
+              <h3>Observación didáctica</h3>
+              <p id="observacion"></p>
+            </div>
+          </div>
         </div>
       </div>
+
+      <div class="pie">
+        <div class="sugerencia">
+          Puedes incrustar este archivo con <strong>iframe</strong> dentro de una pregunta de Moodle
+          y debajo agregar preguntas Cloze para que el estudiante responda con base en lo que observó.
+        </div>
+      </div>
+
     </div>
-
   </div>
-</main>
 
-<!-- GeoGebra -->
-<script src="https://www.geogebra.org/apps/deployggb.js"></script>
-<script>
-(function(){
-  // ==========
-  // GEO 1: recta real + puntos A,B + textos a,b,b-a
-  // ==========
-  const params1 = {
-    appName: "graphing",
-    width: 980,
-    height: 420,
-    showToolBar: false,
-    showAlgebraInput: false,
-    showMenuBar: false,
-    enableShiftDragZoom: true,
-    enableRightClick: false,
-    useBrowserForJS: true
-  };
+  <script>
+    const canvas = document.getElementById("plano");
+    const ctx = canvas.getContext("2d");
 
-  const app1 = new GGBApplet(params1, true);
+    const coordA = document.getElementById("coordA");
+    const coordB = document.getElementById("coordB");
+    const pendienteTexto = document.getElementById("pendienteTexto");
+    const pendienteEcuacion = document.getElementById("pendienteEcuacion");
+    const eqPuntoPendiente = document.getElementById("eqPuntoPendiente");
+    const eqExplicita = document.getElementById("eqExplicita");
+    const observacion = document.getElementById("observacion");
 
-  // UI
-  const reset1Btn = document.getElementById("reset1Btn");
+    const selNube = document.getElementById("selNube");
+    const fbNube = document.getElementById("fbNube");
+    const selCaja = document.getElementById("selCaja");
+    const fbCaja = document.getElementById("fbCaja");
 
-  // Quiz UI
-  const q1Options = document.getElementById("q1Options");
-  const q1Feedback = document.getElementById("q1Feedback");
-  const retry1Btn = document.getElementById("retry1Btn");
+    const W = canvas.width;
+    const H = canvas.height;
+    const escala = 42;
+    const origenX = W / 2;
+    const origenY = H / 2;
+    const rango = 6;
 
-  // Estado
-  let locked = false;
+    let A = { x: -1, y: -3, color: "#2563eb", label: "A" };
+    let B = { x: 1, y: 2, color: "#16a34a", label: "B" };
+    let puntoActivo = null;
 
-  function renderMath(el){
-    if (window.MathJax && window.MathJax.typesetPromise) {
-      if (window.MathJax.typesetClear) window.MathJax.typesetClear([el]);
-      window.MathJax.typesetPromise([el]).catch(()=>{});
+    function aPixelX(x) { return origenX + x * escala; }
+    function aPixelY(y) { return origenY - y * escala; }
+    function aCoordX(px) { return (px - origenX) / escala; }
+    function aCoordY(py) { return (origenY - py) / escala; }
+
+    function redondearCoord(v) {
+      return Math.max(-rango, Math.min(rango, Math.round(v)));
     }
-  }
 
-  function safeEval(cmd){
-    try { app1.evalCommand(cmd); } catch(e) {}
-  }
-  function safeSetValue(obj, val){
-    try { app1.setValue(obj, val); } catch(e) {}
-  }
+    function gcd(a, b) {
+      a = Math.abs(a);
+      b = Math.abs(b);
+      while (b !== 0) {
+        const t = b;
+        b = a % b;
+        a = t;
+      }
+      return a || 1;
+    }
 
-  function initApplet1(){
-    // Vista: usar eje x tipo recta real
-    safeEval("ShowAxes(true)");
-    safeEval("ShowGrid(false)");
+    function fraccion(n, d) {
+      if (d === 0) return "indefinida";
+      if (n === 0) return "0";
+      const signo = d < 0 ? -1 : 1;
+      n *= signo;
+      d *= signo;
+      const g = gcd(n, d);
+      n /= g; d /= g;
+      if (d === 1) return String(n);
+      return `${n}/${d}`;
+    }
 
-    // Puntos sobre el eje x (y=0)
-    safeEval("A=( -2, 0 )");
-    safeEval("B=( 2, 0 )");
+    function formatoNumero(n) {
+      if (!isFinite(n)) return "indefinido";
+      if (Math.abs(n - Math.round(n)) < 1e-10) return String(Math.round(n));
+      return n.toFixed(2);
+    }
 
-    // Restringir a y=0 (mantenerlos en la recta)
-    safeEval("SetConditionToShowObject(A, true)");
-    safeEval("SetConditionToShowObject(B, true)");
-    safeEval("SetFixed(false, A)");
-    safeEval("SetFixed(false, B)");
+    function dibujarCuadricula() {
+      ctx.clearRect(0, 0, W, H);
 
-    // Valores a, b y diferencia (b-a)
-    safeEval("a = x(A)");
-    safeEval("b = x(B)");
-    safeEval("d = b - a");
+      for (let i = -rango; i <= rango; i++) {
+        ctx.beginPath();
+        ctx.strokeStyle = i === 0 ? "#333" : "#d8dee6";
+        ctx.lineWidth = i === 0 ? 2 : 1;
 
-    // Segmento (opcional) y etiquetas
-    safeEval("s = Segment(A,B)");
-    safeEval("SetLineThickness(s, 5)");
-    safeEval("SetColor(s, 122, 162, 255)");
+        // vertical
+        ctx.moveTo(aPixelX(i), aPixelY(-rango));
+        ctx.lineTo(aPixelX(i), aPixelY(rango));
+        ctx.stroke();
 
-    safeEval("SetPointSize(A, 6)");
-    safeEval("SetPointSize(B, 6)");
-    safeEval("SetColor(A, 255, 120, 120)");
-    safeEval("SetColor(B, 120, 255, 150)");
+        // horizontal
+        ctx.beginPath();
+        ctx.strokeStyle = i === 0 ? "#333" : "#d8dee6";
+        ctx.lineWidth = i === 0 ? 2 : 1;
+        ctx.moveTo(aPixelX(-rango), aPixelY(i));
+        ctx.lineTo(aPixelX(rango), aPixelY(i));
+        ctx.stroke();
+      }
 
-    // Textos dinámicos
-    safeEval('t1 = Text("a = " + Round(a,2), ( -6, 3 ))');
-    safeEval('t2 = Text("b = " + Round(b,2), ( -6, 2.2 ))');
-    safeEval('t3 = Text("b - a = " + Round(d,2), ( -6, 1.4 ))');
-    safeEval('t4 = Text("Regla: si A está a la izquierda de B, entonces b-a > 0", ( -6, 0.6 ))');
+      // flechas y etiquetas
+      ctx.fillStyle = "#111827";
+      ctx.font = "14px Segoe UI";
 
-    // Ajustar ventana
-    safeEval("SetCoordSystem(-8,8,-2,4)");
+      // eje x
+      ctx.beginPath();
+      ctx.moveTo(aPixelX(rango), aPixelY(0));
+      ctx.lineTo(aPixelX(rango) - 10, aPixelY(0) - 5);
+      ctx.lineTo(aPixelX(rango) - 10, aPixelY(0) + 5);
+      ctx.closePath();
+      ctx.fill();
+      ctx.fillText("x", aPixelX(rango) - 18, aPixelY(0) - 10);
 
-    // Consejo: mantener A y B cerca del eje
-    // Nota: GeoGebra Graphing permite arrastrar libre; si se salen, el usuario puede regresarlos.
-  }
+      // eje y
+      ctx.beginPath();
+      ctx.moveTo(aPixelX(0), aPixelY(rango));
+      ctx.lineTo(aPixelX(0) - 5, aPixelY(rango) + 10);
+      ctx.lineTo(aPixelX(0) + 5, aPixelY(rango) + 10);
+      ctx.closePath();
+      ctx.fill();
+      ctx.fillText("y", aPixelX(0) + 10, aPixelY(rango) + 16);
 
-  function resetApplet1(){
-    safeSetValue("A", -2); // setValue funciona sobre objetos numéricos; para puntos no siempre
-    // Reinicio robusto: redefine los puntos
-    safeEval("A=( -2, 0 )");
-    safeEval("B=( 2, 0 )");
-  }
+      // números
+      ctx.fillStyle = "#475569";
+      ctx.font = "12px Segoe UI";
+      for (let i = -rango; i <= rango; i++) {
+        if (i !== 0) {
+          ctx.fillText(String(i), aPixelX(i) - 5, aPixelY(0) + 16);
+          ctx.fillText(String(i), aPixelX(0) - 18, aPixelY(i) + 4);
+        }
+      }
+    }
 
-  window.addEventListener("load", function(){
-    app1.inject("ggb1");
+    function dibujarRecta() {
+      if (A.x === B.x) {
+        ctx.beginPath();
+        ctx.strokeStyle = "#0f766e";
+        ctx.lineWidth = 2.5;
+        ctx.moveTo(aPixelX(A.x), aPixelY(-rango));
+        ctx.lineTo(aPixelX(A.x), aPixelY(rango));
+        ctx.stroke();
+        return;
+      }
 
-    // Espera mínima a que cargue y luego inicializa comandos
-    setTimeout(initApplet1, 250);
-  });
+      const m = (B.y - A.y) / (B.x - A.x);
+      const b = A.y - m * A.x;
 
-  reset1Btn.addEventListener("click", () => {
-    resetApplet1();
-    q1Feedback.className = "feedback";
-    q1Feedback.textContent = "Puntos reiniciados. Observa a, b y b-a, y responde.";
-    unlockOptions();
-  });
+      const x1 = -rango;
+      const y1 = m * x1 + b;
+      const x2 = rango;
+      const y2 = m * x2 + b;
 
-  // ==========
-  // QUIZ LOGIC
-  // ==========
-  function lockOptions(){
-    locked = true;
-    q1Options.querySelectorAll("button").forEach(b => b.disabled = true);
-  }
-  function unlockOptions(){
-    locked = false;
-    q1Options.querySelectorAll("button").forEach(b => {
-      b.disabled = false;
-      b.classList.remove("correct","wrong");
+      ctx.beginPath();
+      ctx.strokeStyle = "#0f766e";
+      ctx.lineWidth = 3;
+      ctx.moveTo(aPixelX(x1), aPixelY(y1));
+      ctx.lineTo(aPixelX(x2), aPixelY(y2));
+      ctx.stroke();
+    }
+
+    function dibujarTrianguloPendiente() {
+      if (A.x === B.x) return;
+
+      ctx.setLineDash([6, 5]);
+      ctx.lineWidth = 2;
+
+      // horizontal
+      ctx.beginPath();
+      ctx.strokeStyle = "#f59e0b";
+      ctx.moveTo(aPixelX(A.x), aPixelY(A.y));
+      ctx.lineTo(aPixelX(B.x), aPixelY(A.y));
+      ctx.stroke();
+
+      // vertical
+      ctx.beginPath();
+      ctx.strokeStyle = "#ef4444";
+      ctx.moveTo(aPixelX(B.x), aPixelY(A.y));
+      ctx.lineTo(aPixelX(B.x), aPixelY(B.y));
+      ctx.stroke();
+
+      ctx.setLineDash([]);
+
+      // etiquetas rise/run
+      const medioX = (A.x + B.x) / 2;
+      const medioY = (A.y + B.y) / 2;
+
+      ctx.fillStyle = "#b45309";
+      ctx.font = "13px Segoe UI";
+      ctx.fillText(`Δx = ${B.x - A.x}`, aPixelX(medioX) - 18, aPixelY(A.y) - 8);
+
+      ctx.fillStyle = "#b91c1c";
+      ctx.fillText(`Δy = ${B.y - A.y}`, aPixelX(B.x) + 8, aPixelY(medioY));
+    }
+
+    function dibujarPunto(P) {
+      ctx.beginPath();
+      ctx.fillStyle = P.color;
+      ctx.strokeStyle = "white";
+      ctx.lineWidth = 2.5;
+      ctx.arc(aPixelX(P.x), aPixelY(P.y), 8, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.stroke();
+
+      ctx.fillStyle = P.color;
+      ctx.font = "bold 15px Segoe UI";
+      ctx.fillText(P.label, aPixelX(P.x) + 10, aPixelY(P.y) - 10);
+    }
+
+    function actualizarPanel() {
+      coordA.textContent = `(${A.x}, ${A.y})`;
+      coordB.textContent = `(${B.x}, ${B.y})`;
+
+      if (A.x === B.x) {
+        pendienteTexto.textContent = "La recta es vertical, así que la pendiente no está definida.";
+        pendienteEcuacion.textContent = `m = (${B.y} - ${A.y}) / (${B.x} - ${A.x}) = ${B.y - A.y}/0 → indefinida`;
+        eqPuntoPendiente.textContent = `x = ${A.x}`;
+        eqExplicita.textContent = `No se puede escribir como y = mx + b porque la recta es vertical.`;
+        observacion.textContent = "Cuando las coordenadas en x de ambos puntos coinciden, aparece una recta vertical.";
+        return;
+      }
+
+      const dy = B.y - A.y;
+      const dx = B.x - A.x;
+      const m = dy / dx;
+      const b = A.y - m * A.x;
+
+      pendienteTexto.textContent = `La pendiente mide el cambio vertical dividido por el cambio horizontal.`;
+      pendienteEcuacion.textContent = `m = (${B.y} - ${A.y}) / (${B.x} - ${A.x}) = ${dy}/${dx} = ${fraccion(dy, dx)} = ${formatoNumero(m)}`;
+
+      const y0Txt = A.y >= 0 ? `${A.y}` : `(${A.y})`;
+      const x0Txt = A.x >= 0 ? `${A.x}` : `(${A.x})`;
+      eqPuntoPendiente.textContent = `y - ${y0Txt} = ${formatoNumero(m)}(x - ${x0Txt})`;
+
+      const signoB = b >= 0 ? `+ ${formatoNumero(b)}` : `- ${formatoNumero(Math.abs(b))}`;
+      eqExplicita.textContent = `y = ${formatoNumero(m)}x ${signoB}`;
+
+      if (m > 0) {
+        observacion.textContent = "La recta es creciente: al aumentar x, también aumenta y.";
+      } else if (m < 0) {
+        observacion.textContent = "La recta es decreciente: al aumentar x, y disminuye.";
+      } else {
+        observacion.textContent = "La recta es horizontal: todos sus puntos tienen la misma coordenada y.";
+      }
+    }
+
+    function dibujarTodo() {
+      dibujarCuadricula();
+      dibujarRecta();
+      dibujarTrianguloPendiente();
+      dibujarPunto(A);
+      dibujarPunto(B);
+      actualizarPanel();
+    }
+
+    function distanciaPixel(P, mouseX, mouseY) {
+      return Math.hypot(aPixelX(P.x) - mouseX, aPixelY(P.y) - mouseY);
+    }
+
+    canvas.addEventListener("mousedown", (e) => {
+      const rect = canvas.getBoundingClientRect();
+      const mx = e.clientX - rect.left;
+      const my = e.clientY - rect.top;
+
+      if (distanciaPixel(A, mx, my) < 12) {
+        puntoActivo = A;
+      } else if (distanciaPixel(B, mx, my) < 12) {
+        puntoActivo = B;
+      }
     });
-  }
 
-  function getAB(){
-    // Lee valores desde GeoGebra
-    let a = NaN, b = NaN;
-    try { a = parseFloat(app1.getValue("a")); } catch(e) {}
-    try { b = parseFloat(app1.getValue("b")); } catch(e) {}
-    return {a,b};
-  }
+    canvas.addEventListener("mousemove", (e) => {
+      const rect = canvas.getBoundingClientRect();
+      const mx = e.clientX - rect.left;
+      const my = e.clientY - rect.top;
 
-  // Evalúa la respuesta respecto a la configuración actual de puntos
-  // Regla: si a<b, la respuesta correcta es "pos"
-  // Si a=b, la correcta es "cero"
-  // Si a>b, la correcta es "neg"
-  function correctAnswerFromState(){
-    const {a,b} = getAB();
-    if (!isFinite(a) || !isFinite(b)) return null;
-    const eps = 1e-9;
-    if (Math.abs(a-b) < eps) return "cero";
-    if (a < b) return "pos";
-    return "neg";
-  }
+      const sobreA = distanciaPixel(A, mx, my) < 12;
+      const sobreB = distanciaPixel(B, mx, my) < 12;
+      canvas.style.cursor = (sobreA || sobreB || puntoActivo) ? "grabbing" : "grab";
 
-  q1Options.addEventListener("click", (e) => {
-    const btn = e.target.closest("button");
-    if (!btn || locked) return;
+      if (!puntoActivo) return;
 
-    const chosen = btn.dataset.answer;
-    const correct = correctAnswerFromState();
+      puntoActivo.x = redondearCoord(aCoordX(mx));
+      puntoActivo.y = redondearCoord(aCoordY(my));
+      dibujarTodo();
+    });
 
-    // Si por alguna razón aún no hay valores
-    if (!correct){
-      q1Feedback.className = "feedback bad";
-      q1Feedback.textContent = "No pude leer a y b del applet. Intenta mover un punto y vuelve a intentar.";
-      return;
+    window.addEventListener("mouseup", () => {
+      puntoActivo = null;
+    });
+
+    function revisarSelect(select, feedback, correcto) {
+      if (!select.value) {
+        feedback.textContent = "";
+        feedback.className = "feedback";
+        return;
+      }
+
+      if (select.value === correcto) {
+        feedback.textContent = "Correcto.";
+        feedback.className = "feedback ok";
+      } else {
+        feedback.textContent = "Revisa la idea y vuelve a intentarlo.";
+        feedback.className = "feedback bad";
+      }
     }
 
-    lockOptions();
+    selNube.addEventListener("change", () => revisarSelect(selNube, fbNube, "correcta"));
+    selCaja.addEventListener("change", () => revisarSelect(selCaja, fbCaja, "correcta"));
 
-    // Marcar correcta en verde
-    const correctBtn = q1Options.querySelector(`button[data-answer="${correct}"]`);
-    if (correctBtn) correctBtn.classList.add("correct");
-
-    if (chosen === correct){
-      btn.classList.add("correct");
-      q1Feedback.className = "feedback ok";
-      q1Feedback.innerHTML =
-        `✅ <strong>Correcto.</strong> En tu configuración actual, se cumple que ` +
-        (correct==="pos" ? "\\(a<b\\) y por eso \\(b-a>0\\)." :
-         correct==="cero" ? "\\(a=b\\) y por eso \\(b-a=0\\)." :
-         "\\(a>b\\) y por eso \\(b-a<0\\).");
-      renderMath(q1Feedback);
-    } else {
-      btn.classList.add("wrong");
-      q1Feedback.className = "feedback bad";
-      q1Feedback.innerHTML =
-        `❌ <strong>Incorrecto.</strong> Mira la recta: el punto más a la derecha tiene mayor valor. ` +
-        `La diferencia \\(b-a\\) es <strong>positiva</strong> si \\(a<b\\), ` +
-        `<strong>cero</strong> si \\(a=b\\), y <strong>negativa</strong> si \\(a>b\\). ` +
-        `En tu caso, la opción correcta es la marcada en verde.`;
-      renderMath(q1Feedback);
-    }
-  });
-
-  retry1Btn.addEventListener("click", () => {
-    unlockOptions();
-    q1Feedback.className = "feedback";
-    q1Feedback.textContent = "Reintenta: mueve A y B, observa a, b y b-a, y selecciona la opción correcta.";
-  });
-
-})();
-</script>
-
+    dibujarTodo();
+  </script>
 </body>
 </html>
