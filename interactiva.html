@@ -1,271 +1,433 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<title>Forma punto pendiente</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Recta interactiva</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: "Segoe UI", Arial, sans-serif;
+      background: #eef3f7;
+      color: #1f2937;
+    }
 
-<style>
-body{
-  margin:0;
-  font-family:Segoe UI, Arial;
-  background:#eef3f7;
-}
+    .contenedor {
+      max-width: 1100px;
+      margin: 30px auto;
+      background: white;
+      border-radius: 18px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+      overflow: hidden;
+      border: 1px solid #dbe5ee;
+    }
 
-/* CONTENEDOR */
-.container{
-  max-width:1100px;
-  margin:30px auto;
-  background:white;
-  border-radius:20px;
-  overflow:hidden;
-  box-shadow:0 10px 30px rgba(0,0,0,0.08);
-}
+    .encabezado {
+      background: linear-gradient(180deg, #dff1fb, #cfe9f7);
+      padding: 24px;
+      text-align: center;
+    }
 
-/* CABECERA */
-.header{
-  background:linear-gradient(180deg,#dff1fb,#cfe9f7);
-  padding:30px;
-  text-align:center;
-}
+    .encabezado h1 {
+      margin: 0 0 8px;
+      color: #2563eb;
+      font-size: 2rem;
+    }
 
-.header h1{
-  color:#2e7d32;
-  margin-bottom:10px;
-}
+    .encabezado p {
+      margin: 0;
+      font-size: 1rem;
+      color: #334155;
+    }
 
-.formula{
-  display:inline-block;
-  background:#6dd46c;
-  padding:12px 25px;
-  border-radius:12px;
-  font-weight:bold;
-  color:white;
-  margin:15px 0;
-}
+    .contenido {
+      display: grid;
+      grid-template-columns: 560px 1fr;
+      gap: 24px;
+      padding: 24px;
+      align-items: start;
+    }
 
-/* BLOQUE EXPLICATIVO */
-.info{
-  display:flex;
-  justify-content:space-between;
-  padding:25px;
-  background:#cfe9f7;
-}
+    canvas {
+      background: #ffffff;
+      border: 1px solid #d7dee7;
+      border-radius: 14px;
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,0.7);
+      cursor: grab;
+    }
 
-/* NUBE */
-.cloud{
-  background:#7edc73;
-  border-radius:60px;
-  padding:20px;
-  width:45%;
-  position:relative;
-  border:2px solid #3f8c43;
-}
+    .panel-datos {
+      display: grid;
+      gap: 14px;
+    }
 
-.cloud:before{
-  content:"";
-  position:absolute;
-  top:-20px;
-  left:60px;
-  width:40px;
-  height:40px;
-  background:#7edc73;
-  border-radius:50%;
-  border:2px solid #3f8c43;
-}
+    .card {
+      background: #f8fbff;
+      border: 1px solid #dbe3ec;
+      border-radius: 14px;
+      padding: 16px;
+    }
 
-.cloud:after{
-  content:"";
-  position:absolute;
-  top:-40px;
-  left:100px;
-  width:25px;
-  height:25px;
-  background:#7edc73;
-  border-radius:50%;
-  border:2px solid #3f8c43;
-}
+    .card h3 {
+      margin: 0 0 10px;
+      font-size: 1rem;
+      color: #0f172a;
+    }
 
-/* CAJA DERECHA */
-.box{
-  background:#7edc73;
-  border-radius:15px;
-  padding:20px;
-  width:45%;
-  border:2px solid #3f8c43;
-}
+    .card p {
+      margin: 8px 0;
+      line-height: 1.45;
+    }
 
-/* GRAFICA */
-.graph-section{
-  padding:30px;
-}
+    .etiqueta {
+      display: inline-block;
+      padding: 4px 9px;
+      border-radius: 999px;
+      background: #dbeafe;
+      color: #1d4ed8;
+      font-size: 0.85rem;
+      font-weight: 700;
+    }
 
-canvas{
-  border:1px solid #ccc;
-  border-radius:12px;
-  background:white;
-}
+    .ecuacion {
+      font-family: "Cambria Math", "Times New Roman", serif;
+      font-size: 1.08rem;
+      background: #eef6ff;
+      border: 1px solid #cfe1f7;
+      border-radius: 10px;
+      padding: 10px 12px;
+      margin-top: 8px;
+      word-break: break-word;
+    }
 
-</style>
+    .nota {
+      color: #475569;
+      font-size: 0.94rem;
+    }
+
+    @media (max-width: 980px) {
+      .contenido {
+        grid-template-columns: 1fr;
+      }
+
+      canvas {
+        width: 100%;
+        height: auto;
+      }
+    }
+  </style>
 </head>
-
 <body>
+  <div class="contenedor">
+    <div class="encabezado">
+      <h1>Recta interactiva</h1>
+      <p>Arrastra los puntos A y B para cambiar la recta y observar sus propiedades.</p>
+    </div>
 
-<div class="container">
+    <div class="contenido">
+      <canvas id="plano" width="560" height="560"></canvas>
 
-<!-- CABECERA -->
-<div class="header">
-  <h1>Forma punto pendiente</h1>
-  <p>Para encontrar la ecuación de una recta necesitamos un punto y su pendiente.</p>
+      <div class="panel-datos">
+        <div class="card">
+          <h3>Coordenadas</h3>
+          <p><span class="etiqueta">Punto A</span> <span id="coordA"></span></p>
+          <p><span class="etiqueta">Punto B</span> <span id="coordB"></span></p>
+        </div>
 
-  <div class="formula">
-    y - y₀ = m(x - x₀)
+        <div class="card">
+          <h3>Pendiente</h3>
+          <p id="textoPendiente"></p>
+          <div class="ecuacion" id="ecuacionPendiente"></div>
+        </div>
+
+        <div class="card">
+          <h3>Ecuación de la recta</h3>
+          <div class="ecuacion" id="ecuacionRecta"></div>
+        </div>
+
+        <div class="card">
+          <h3>Observación</h3>
+          <p id="observacion" class="nota"></p>
+        </div>
+      </div>
+    </div>
   </div>
 
-  <p>La pendiente se calcula como: m = (y₂ - y₁)/(x₂ - x₁)</p>
-</div>
+  <script>
+    const canvas = document.getElementById("plano");
+    const ctx = canvas.getContext("2d");
 
-<!-- BLOQUE VISUAL -->
-<div class="info">
+    const coordA = document.getElementById("coordA");
+    const coordB = document.getElementById("coordB");
+    const textoPendiente = document.getElementById("textoPendiente");
+    const ecuacionPendiente = document.getElementById("ecuacionPendiente");
+    const ecuacionRecta = document.getElementById("ecuacionRecta");
+    const observacion = document.getElementById("observacion");
 
-  <div class="cloud">
-    <strong>Pregunta en la nube</strong>
-    <p>
-      Si no me dan la pendiente, pero sí dos puntos de la recta,
-      entonces primero debo calcular la pendiente.
-    </p>
-  </div>
+    const W = canvas.width;
+    const H = canvas.height;
+    const escala = 40;
+    const origenX = W / 2;
+    const origenY = H / 2;
+    const rango = 6;
 
-  <div class="box">
-    <strong>Pregunta en la caja derecha</strong>
-    <p>
-      Si ya conozco un punto y la pendiente,
-      la forma que conviene usar es la forma punto-pendiente.
-    </p>
-  </div>
+    let A = { x: -2, y: -2, color: "#2563eb", label: "A" };
+    let B = { x: 2, y: 3, color: "#dc2626", label: "B" };
+    let puntoActivo = null;
 
-</div>
+    function aPixelX(x) {
+      return origenX + x * escala;
+    }
 
-<!-- GRAFICA INTERACTIVA -->
-<div class="graph-section">
+    function aPixelY(y) {
+      return origenY - y * escala;
+    }
 
-<canvas id="canvas" width="500" height="500"></canvas>
+    function aCoordX(px) {
+      return (px - origenX) / escala;
+    }
 
-</div>
+    function aCoordY(py) {
+      return (origenY - py) / escala;
+    }
 
-</div>
+    function redondearCoord(v) {
+      return Math.max(-rango, Math.min(rango, Math.round(v)));
+    }
 
-<script>
+    function gcd(a, b) {
+      a = Math.abs(a);
+      b = Math.abs(b);
+      while (b !== 0) {
+        let t = b;
+        b = a % b;
+        a = t;
+      }
+      return a || 1;
+    }
 
-const canvas = document.getElementById("canvas");
-const ctx = canvas.getContext("2d");
+    function fraccion(n, d) {
+      if (d === 0) return "indefinida";
+      if (n === 0) return "0";
+      const signo = d < 0 ? -1 : 1;
+      n *= signo;
+      d *= signo;
+      const g = gcd(n, d);
+      n /= g;
+      d /= g;
+      if (d === 1) return String(n);
+      return `${n}/${d}`;
+    }
 
-const escala = 40;
-const cx = canvas.width/2;
-const cy = canvas.height/2;
+    function formatoNumero(n) {
+      if (!isFinite(n)) return "indefinido";
+      if (Math.abs(n - Math.round(n)) < 1e-10) return String(Math.round(n));
+      return n.toFixed(2);
+    }
 
-let A = {x:-2,y:-2};
-let B = {x:2,y:3};
+    function dibujarCuadricula() {
+      ctx.clearRect(0, 0, W, H);
 
-let dragging = null;
+      for (let i = -rango; i <= rango; i++) {
+        // verticales
+        ctx.beginPath();
+        ctx.strokeStyle = i === 0 ? "#111827" : "#d8dee6";
+        ctx.lineWidth = i === 0 ? 2 : 1;
+        ctx.moveTo(aPixelX(i), aPixelY(-rango));
+        ctx.lineTo(aPixelX(i), aPixelY(rango));
+        ctx.stroke();
 
-function draw(){
+        // horizontales
+        ctx.beginPath();
+        ctx.strokeStyle = i === 0 ? "#111827" : "#d8dee6";
+        ctx.lineWidth = i === 0 ? 2 : 1;
+        ctx.moveTo(aPixelX(-rango), aPixelY(i));
+        ctx.lineTo(aPixelX(rango), aPixelY(i));
+        ctx.stroke();
+      }
 
-  ctx.clearRect(0,0,canvas.width,canvas.height);
+      // Flechas y etiquetas
+      ctx.fillStyle = "#111827";
+      ctx.font = "14px Segoe UI";
 
-  // grid
-  ctx.strokeStyle="#eee";
-  for(let i=-5;i<=5;i++){
-    ctx.beginPath();
-    ctx.moveTo(cx+i*escala,0);
-    ctx.lineTo(cx+i*escala,500);
-    ctx.stroke();
+      // eje x
+      ctx.beginPath();
+      ctx.moveTo(aPixelX(rango), aPixelY(0));
+      ctx.lineTo(aPixelX(rango) - 10, aPixelY(0) - 5);
+      ctx.lineTo(aPixelX(rango) - 10, aPixelY(0) + 5);
+      ctx.closePath();
+      ctx.fill();
+      ctx.fillText("x", aPixelX(rango) - 18, aPixelY(0) - 10);
 
-    ctx.beginPath();
-    ctx.moveTo(0,cy+i*escala);
-    ctx.lineTo(500,cy+i*escala);
-    ctx.stroke();
-  }
+      // eje y
+      ctx.beginPath();
+      ctx.moveTo(aPixelX(0), aPixelY(rango));
+      ctx.lineTo(aPixelX(0) - 5, aPixelY(rango) + 10);
+      ctx.lineTo(aPixelX(0) + 5, aPixelY(rango) + 10);
+      ctx.closePath();
+      ctx.fill();
+      ctx.fillText("y", aPixelX(0) + 10, aPixelY(rango) + 16);
 
-  // axes
-  ctx.strokeStyle="#000";
-  ctx.lineWidth=2;
+      // Números
+      ctx.fillStyle = "#475569";
+      ctx.font = "12px Segoe UI";
+      for (let i = -rango; i <= rango; i++) {
+        if (i !== 0) {
+          ctx.fillText(String(i), aPixelX(i) - 5, aPixelY(0) + 16);
+          ctx.fillText(String(i), aPixelX(0) - 18, aPixelY(i) + 4);
+        }
+      }
+    }
 
-  ctx.beginPath();
-  ctx.moveTo(0,cy);
-  ctx.lineTo(500,cy);
-  ctx.stroke();
+    function dibujarRecta() {
+      if (A.x === B.x) {
+        ctx.beginPath();
+        ctx.strokeStyle = "#0f766e";
+        ctx.lineWidth = 3;
+        ctx.moveTo(aPixelX(A.x), aPixelY(-rango));
+        ctx.lineTo(aPixelX(A.x), aPixelY(rango));
+        ctx.stroke();
+        return;
+      }
 
-  ctx.beginPath();
-  ctx.moveTo(cx,0);
-  ctx.lineTo(cx,500);
-  ctx.stroke();
+      const m = (B.y - A.y) / (B.x - A.x);
+      const b = A.y - m * A.x;
 
-  // line
-  let m = (B.y-A.y)/(B.x-A.x);
-  let b = A.y - m*A.x;
+      const x1 = -rango;
+      const y1 = m * x1 + b;
+      const x2 = rango;
+      const y2 = m * x2 + b;
 
-  ctx.strokeStyle="blue";
-  ctx.lineWidth=3;
+      ctx.beginPath();
+      ctx.strokeStyle = "#0f766e";
+      ctx.lineWidth = 3;
+      ctx.moveTo(aPixelX(x1), aPixelY(y1));
+      ctx.lineTo(aPixelX(x2), aPixelY(y2));
+      ctx.stroke();
+    }
 
-  ctx.beginPath();
+    function dibujarTrianguloPendiente() {
+      if (A.x === B.x) return;
 
-  let x1=-10, y1=m*x1+b;
-  let x2=10, y2=m*x2+b;
+      ctx.setLineDash([6, 5]);
+      ctx.lineWidth = 2;
 
-  ctx.moveTo(cx+x1*escala, cy-y1*escala);
-  ctx.lineTo(cx+x2*escala, cy-y2*escala);
+      // Horizontal
+      ctx.beginPath();
+      ctx.strokeStyle = "#f59e0b";
+      ctx.moveTo(aPixelX(A.x), aPixelY(A.y));
+      ctx.lineTo(aPixelX(B.x), aPixelY(A.y));
+      ctx.stroke();
 
-  ctx.stroke();
+      // Vertical
+      ctx.beginPath();
+      ctx.strokeStyle = "#ef4444";
+      ctx.moveTo(aPixelX(B.x), aPixelY(A.y));
+      ctx.lineTo(aPixelX(B.x), aPixelY(B.y));
+      ctx.stroke();
 
-  drawPoint(A,"A");
-  drawPoint(B,"B");
-}
+      ctx.setLineDash([]);
 
-function drawPoint(P,label){
-  ctx.beginPath();
-  ctx.fillStyle="red";
-  ctx.arc(cx+P.x*escala, cy-P.y*escala, 7, 0, Math.PI*2);
-  ctx.fill();
+      ctx.fillStyle = "#b45309";
+      ctx.font = "13px Segoe UI";
+      ctx.fillText(`Δx = ${B.x - A.x}`, aPixelX((A.x + B.x) / 2) - 18, aPixelY(A.y) - 8);
 
-  ctx.fillText(label, cx+P.x*escala+10, cy-P.y*escala-10);
-}
+      ctx.fillStyle = "#b91c1c";
+      ctx.fillText(`Δy = ${B.y - A.y}`, aPixelX(B.x) + 8, aPixelY((A.y + B.y) / 2));
+    }
 
-canvas.addEventListener("mousedown",(e)=>{
-  let rect=canvas.getBoundingClientRect();
-  let mx=e.clientX-rect.left;
-  let my=e.clientY-rect.top;
+    function dibujarPunto(P) {
+      ctx.beginPath();
+      ctx.fillStyle = P.color;
+      ctx.strokeStyle = "#ffffff";
+      ctx.lineWidth = 2.5;
+      ctx.arc(aPixelX(P.x), aPixelY(P.y), 8, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.stroke();
 
-  if(dist(mx,my,A)<10) dragging="A";
-  if(dist(mx,my,B)<10) dragging="B";
-});
+      ctx.fillStyle = P.color;
+      ctx.font = "bold 15px Segoe UI";
+      ctx.fillText(P.label, aPixelX(P.x) + 10, aPixelY(P.y) - 10);
+    }
 
-canvas.addEventListener("mousemove",(e)=>{
-  if(!dragging) return;
+    function actualizarPanel() {
+      coordA.textContent = `(${A.x}, ${A.y})`;
+      coordB.textContent = `(${B.x}, ${B.y})`;
 
-  let rect=canvas.getBoundingClientRect();
-  let mx=e.clientX-rect.left;
-  let my=e.clientY-rect.top;
+      if (A.x === B.x) {
+        textoPendiente.textContent = "La recta es vertical.";
+        ecuacionPendiente.textContent = `m = (${B.y} - ${A.y}) / (${B.x} - ${A.x}) = ${B.y - A.y}/0 → indefinida`;
+        ecuacionRecta.textContent = `x = ${A.x}`;
+        observacion.textContent = "Cuando ambos puntos tienen la misma coordenada en x, se obtiene una recta vertical.";
+        return;
+      }
 
-  let x=Math.round((mx-cx)/escala);
-  let y=Math.round((cy-my)/escala);
+      const dy = B.y - A.y;
+      const dx = B.x - A.x;
+      const m = dy / dx;
+      const b = A.y - m * A.x;
 
-  if(dragging==="A"){A.x=x;A.y=y;}
-  if(dragging==="B"){B.x=x;B.y=y;}
+      textoPendiente.textContent = "La pendiente es el cambio vertical dividido por el cambio horizontal.";
+      ecuacionPendiente.textContent = `m = (${B.y} - ${A.y}) / (${B.x} - ${A.x}) = ${dy}/${dx} = ${fraccion(dy, dx)} = ${formatoNumero(m)}`;
 
-  draw();
-});
+      const signoB = b >= 0 ? `+ ${formatoNumero(b)}` : `- ${formatoNumero(Math.abs(b))}`;
+      ecuacionRecta.textContent = `y = ${formatoNumero(m)}x ${signoB}`;
 
-canvas.addEventListener("mouseup",()=>dragging=null);
+      if (m > 0) {
+        observacion.textContent = "La recta es creciente.";
+      } else if (m < 0) {
+        observacion.textContent = "La recta es decreciente.";
+      } else {
+        observacion.textContent = "La recta es horizontal.";
+      }
+    }
 
-function dist(mx,my,P){
-  let px=cx+P.x*escala;
-  let py=cy-P.y*escala;
-  return Math.hypot(mx-px,my-py);
-}
+    function dibujarTodo() {
+      dibujarCuadricula();
+      dibujarRecta();
+      dibujarTrianguloPendiente();
+      dibujarPunto(A);
+      dibujarPunto(B);
+      actualizarPanel();
+    }
 
-draw();
+    function distanciaPixel(P, mouseX, mouseY) {
+      return Math.hypot(aPixelX(P.x) - mouseX, aPixelY(P.y) - mouseY);
+    }
 
-</script>
+    canvas.addEventListener("mousedown", (e) => {
+      const rect = canvas.getBoundingClientRect();
+      const mx = e.clientX - rect.left;
+      const my = e.clientY - rect.top;
 
+      if (distanciaPixel(A, mx, my) < 12) {
+        puntoActivo = A;
+      } else if (distanciaPixel(B, mx, my) < 12) {
+        puntoActivo = B;
+      }
+    });
+
+    canvas.addEventListener("mousemove", (e) => {
+      const rect = canvas.getBoundingClientRect();
+      const mx = e.clientX - rect.left;
+      const my = e.clientY - rect.top;
+
+      const sobreA = distanciaPixel(A, mx, my) < 12;
+      const sobreB = distanciaPixel(B, mx, my) < 12;
+      canvas.style.cursor = (sobreA || sobreB || puntoActivo) ? "grabbing" : "grab";
+
+      if (!puntoActivo) return;
+
+      puntoActivo.x = redondearCoord(aCoordX(mx));
+      puntoActivo.y = redondearCoord(aCoordY(my));
+      dibujarTodo();
+    });
+
+    window.addEventListener("mouseup", () => {
+      puntoActivo = null;
+    });
+
+    dibujarTodo();
+  </script>
 </body>
 </html>
