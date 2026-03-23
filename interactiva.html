@@ -1,48 +1,271 @@
-<p><strong>Explora la siguiente simulación sobre la forma punto-pendiente.</strong></p>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Forma punto pendiente</title>
 
-<div style="width:100%; max-width:1100px; margin:16px auto; text-align:center;">
-  <iframe
-    src="AQUI_TU_LINK"
-    width="1100"
-    height="1180"
-    style="border:none; border-radius:12px; box-shadow:0 2px 10px rgba(0,0,0,0.08); background:white;">
-  </iframe>
+<style>
+body{
+  margin:0;
+  font-family:Segoe UI, Arial;
+  background:#eef3f7;
+}
+
+/* CONTENEDOR */
+.container{
+  max-width:1100px;
+  margin:30px auto;
+  background:white;
+  border-radius:20px;
+  overflow:hidden;
+  box-shadow:0 10px 30px rgba(0,0,0,0.08);
+}
+
+/* CABECERA */
+.header{
+  background:linear-gradient(180deg,#dff1fb,#cfe9f7);
+  padding:30px;
+  text-align:center;
+}
+
+.header h1{
+  color:#2e7d32;
+  margin-bottom:10px;
+}
+
+.formula{
+  display:inline-block;
+  background:#6dd46c;
+  padding:12px 25px;
+  border-radius:12px;
+  font-weight:bold;
+  color:white;
+  margin:15px 0;
+}
+
+/* BLOQUE EXPLICATIVO */
+.info{
+  display:flex;
+  justify-content:space-between;
+  padding:25px;
+  background:#cfe9f7;
+}
+
+/* NUBE */
+.cloud{
+  background:#7edc73;
+  border-radius:60px;
+  padding:20px;
+  width:45%;
+  position:relative;
+  border:2px solid #3f8c43;
+}
+
+.cloud:before{
+  content:"";
+  position:absolute;
+  top:-20px;
+  left:60px;
+  width:40px;
+  height:40px;
+  background:#7edc73;
+  border-radius:50%;
+  border:2px solid #3f8c43;
+}
+
+.cloud:after{
+  content:"";
+  position:absolute;
+  top:-40px;
+  left:100px;
+  width:25px;
+  height:25px;
+  background:#7edc73;
+  border-radius:50%;
+  border:2px solid #3f8c43;
+}
+
+/* CAJA DERECHA */
+.box{
+  background:#7edc73;
+  border-radius:15px;
+  padding:20px;
+  width:45%;
+  border:2px solid #3f8c43;
+}
+
+/* GRAFICA */
+.graph-section{
+  padding:30px;
+}
+
+canvas{
+  border:1px solid #ccc;
+  border-radius:12px;
+  background:white;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<!-- CABECERA -->
+<div class="header">
+  <h1>Forma punto pendiente</h1>
+  <p>Para encontrar la ecuación de una recta necesitamos un punto y su pendiente.</p>
+
+  <div class="formula">
+    y - y₀ = m(x - x₀)
+  </div>
+
+  <p>La pendiente se calcula como: m = (y₂ - y₁)/(x₂ - x₁)</p>
 </div>
 
-<p><strong>Responde con base en la exploración realizada:</strong></p>
+<!-- BLOQUE VISUAL -->
+<div class="info">
 
-<p>1. Si no me dan la pendiente, pero sí me dan dos puntos de la recta, entonces primero debo:</p>
-<p>{1:MCS:=calcular la pendiente con los dos puntos~sumar las coordenadas~buscar el punto medio~hacer la gráfica sin usar datos}</p>
+  <div class="cloud">
+    <strong>Pregunta en la nube</strong>
+    <p>
+      Si no me dan la pendiente, pero sí dos puntos de la recta,
+      entonces primero debo calcular la pendiente.
+    </p>
+  </div>
 
-<p>2. Si ya conozco un punto y la pendiente, la forma de ecuación que conviene usar es:</p>
-<p>{1:MCS:~Ax+By+C=0~=y-y_0=m(x-x_0)~a^2+b^2=c^2~y=mx+b}</p>
+  <div class="box">
+    <strong>Pregunta en la caja derecha</strong>
+    <p>
+      Si ya conozco un punto y la pendiente,
+      la forma que conviene usar es la forma punto-pendiente.
+    </p>
+  </div>
 
-<p>3. La pendiente entre dos puntos \(A(x_1,y_1)\) y \(B(x_2,y_2)\) se calcula como:</p>
-<p>{1:MCS:~\(\dfrac{x_2-x_1}{y_2-y_1}\)~\(\dfrac{y_1-y_2}{x_2-x_1}\)~\(\dfrac{x_1+x_2}{y_1+y_2}\)~=\(\dfrac{y_2-y_1}{x_2-x_1}\)}</p>
+</div>
 
-<p>4. Si al mover los puntos obtienes una recta horizontal, entonces el valor de la pendiente es:
-\(
-{1:NUMERICAL:=0}
-\)</p>
+<!-- GRAFICA INTERACTIVA -->
+<div class="graph-section">
 
-<p>5. Cuando las coordenadas en \(x\) de los dos puntos son iguales, la recta es:</p>
-<p>{1:MCS:=vertical~horizontal~creciente~con pendiente cero}</p>
+<canvas id="canvas" width="500" height="500"></canvas>
 
-<p>6. Completa la forma punto-pendiente:
-\(
-y-{1:SHORTANSWER:=y_0}=m(x-{1:SHORTANSWER:=x_0})
-\)</p>
+</div>
 
-<p>7. Si una recta tiene pendiente positiva, entonces su comportamiento es:</p>
-<p>{1:MCS:=creciente~decreciente~vertical~horizontal}</p>
+</div>
 
-<p>8. Si una recta tiene pendiente negativa, entonces su comportamiento es:</p>
-<p>{1:MCS:=decreciente~creciente~horizontal~vertical}</p>
+<script>
 
-<p>9. Escribe la palabra que describe la cantidad
-\(
-\dfrac{y_2-y_1}{x_2-x_1}
-\): {1:SHORTANSWER:=pendiente}</p>
+const canvas = document.getElementById("canvas");
+const ctx = canvas.getContext("2d");
 
-<p>10. La forma punto-pendiente necesita:</p>
-<p>{1:MCS:=un punto y la pendiente~dos matrices~una parábola~una integral}</p>
+const escala = 40;
+const cx = canvas.width/2;
+const cy = canvas.height/2;
+
+let A = {x:-2,y:-2};
+let B = {x:2,y:3};
+
+let dragging = null;
+
+function draw(){
+
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+
+  // grid
+  ctx.strokeStyle="#eee";
+  for(let i=-5;i<=5;i++){
+    ctx.beginPath();
+    ctx.moveTo(cx+i*escala,0);
+    ctx.lineTo(cx+i*escala,500);
+    ctx.stroke();
+
+    ctx.beginPath();
+    ctx.moveTo(0,cy+i*escala);
+    ctx.lineTo(500,cy+i*escala);
+    ctx.stroke();
+  }
+
+  // axes
+  ctx.strokeStyle="#000";
+  ctx.lineWidth=2;
+
+  ctx.beginPath();
+  ctx.moveTo(0,cy);
+  ctx.lineTo(500,cy);
+  ctx.stroke();
+
+  ctx.beginPath();
+  ctx.moveTo(cx,0);
+  ctx.lineTo(cx,500);
+  ctx.stroke();
+
+  // line
+  let m = (B.y-A.y)/(B.x-A.x);
+  let b = A.y - m*A.x;
+
+  ctx.strokeStyle="blue";
+  ctx.lineWidth=3;
+
+  ctx.beginPath();
+
+  let x1=-10, y1=m*x1+b;
+  let x2=10, y2=m*x2+b;
+
+  ctx.moveTo(cx+x1*escala, cy-y1*escala);
+  ctx.lineTo(cx+x2*escala, cy-y2*escala);
+
+  ctx.stroke();
+
+  drawPoint(A,"A");
+  drawPoint(B,"B");
+}
+
+function drawPoint(P,label){
+  ctx.beginPath();
+  ctx.fillStyle="red";
+  ctx.arc(cx+P.x*escala, cy-P.y*escala, 7, 0, Math.PI*2);
+  ctx.fill();
+
+  ctx.fillText(label, cx+P.x*escala+10, cy-P.y*escala-10);
+}
+
+canvas.addEventListener("mousedown",(e)=>{
+  let rect=canvas.getBoundingClientRect();
+  let mx=e.clientX-rect.left;
+  let my=e.clientY-rect.top;
+
+  if(dist(mx,my,A)<10) dragging="A";
+  if(dist(mx,my,B)<10) dragging="B";
+});
+
+canvas.addEventListener("mousemove",(e)=>{
+  if(!dragging) return;
+
+  let rect=canvas.getBoundingClientRect();
+  let mx=e.clientX-rect.left;
+  let my=e.clientY-rect.top;
+
+  let x=Math.round((mx-cx)/escala);
+  let y=Math.round((cy-my)/escala);
+
+  if(dragging==="A"){A.x=x;A.y=y;}
+  if(dragging==="B"){B.x=x;B.y=y;}
+
+  draw();
+});
+
+canvas.addEventListener("mouseup",()=>dragging=null);
+
+function dist(mx,my,P){
+  let px=cx+P.x*escala;
+  let py=cy-P.y*escala;
+  return Math.hypot(mx-px,my-py);
+}
+
+draw();
+
+</script>
+
+</body>
+</html>
