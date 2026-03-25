@@ -133,10 +133,11 @@
     }
 
     .node-share{
-      fill:#111;
-      font-size:19px;
+      fill:white;
+      font-size:18px;
       font-weight:bold;
       text-anchor:middle;
+      dominant-baseline:middle;
     }
 
     .legend{
@@ -227,7 +228,7 @@
 
       <div class="note">
         Las etiquetas sobre las flechas son las <strong>probabilidades de transición</strong>.
-        Los porcentajes en los nodos son las <strong>participaciones de mercado</strong> en el tiempo t.
+        Los porcentajes dentro de los nodos son las <strong>participaciones de mercado</strong> en el tiempo t.
       </div>
     </div>
 
@@ -235,8 +236,9 @@
       <div class="panel">
         <svg viewBox="0 0 900 650" aria-label="Diagrama de Markov">
           <defs>
-            <marker id="arrow" markerWidth="11" markerHeight="11" refX="9" refY="5.5" orient="auto" markerUnits="strokeWidth">
-              <path d="M0,0 L11,5.5 L0,11 z" fill="#7fb4bf"></path>
+            <!-- puntas reducidas aproximadamente al 50% -->
+            <marker id="arrow" markerWidth="5.5" markerHeight="5.5" refX="4.5" refY="2.75" orient="auto" markerUnits="strokeWidth">
+              <path d="M0,0 L5.5,2.75 L0,5.5 z" fill="#7fb4bf"></path>
             </marker>
           </defs>
 
@@ -277,14 +279,14 @@
           <circle class="node" cx="450" cy="500" r="105" fill="#2ea526"></circle>
 
           <!-- Letras -->
-          <text class="node-title" x="220" y="210">C</text>
-          <text class="node-title" x="680" y="210">T</text>
-          <text class="node-title" x="450" y="500">D</text>
+          <text class="node-title" x="220" y="195">C</text>
+          <text class="node-title" x="680" y="195">T</text>
+          <text class="node-title" x="450" y="485">D</text>
 
-          <!-- Participaciones -->
-          <text class="node-share" id="shareC" x="220" y="335">55.00%</text>
-          <text class="node-share" id="shareT" x="680" y="335">35.00%</text>
-          <text class="node-share" id="shareD" x="450" y="645">10.00%</text>
+          <!-- Participaciones ahora dentro del nodo -->
+          <text class="node-share" id="shareC" x="220" y="235">55.00%</text>
+          <text class="node-share" id="shareT" x="680" y="235">35.00%</text>
+          <text class="node-share" id="shareD" x="450" y="525">10.00%</text>
         </svg>
 
         <div class="legend">
