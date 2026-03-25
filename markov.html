@@ -5,14 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Cadena de Markov - Operadores en Colombia</title>
 
-  <script>
-    window.MathJax = {
-      tex: { inlineMath: [['\\(','\\)'], ['$', '$']] },
-      svg: { fontCache: 'global' }
-    };
-  </script>
-  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
-
   <style>
     body{
       font-family: Arial, sans-serif;
@@ -103,31 +95,35 @@
       background:#fbfaf5;
       border-radius:12px;
     }
+
     .edge{
       fill:none;
-      stroke:#4d97a3;
-      stroke-width:6;
+      stroke:#7fb4bf;
+      stroke-width:7;
       stroke-linecap:round;
       marker-end:url(#arrow);
-      opacity:0.95;
     }
+
     .self-edge{
       fill:none;
-      stroke:#4d97a3;
-      stroke-width:6;
+      stroke:#7fb4bf;
+      stroke-width:7;
       stroke-linecap:round;
       marker-end:url(#arrow);
     }
+
     .edge-label{
       fill:#0b7285;
       font-size:22px;
       font-weight:bold;
       text-anchor:middle;
     }
+
     .node{
       stroke:#111;
       stroke-width:4;
     }
+
     .node-title{
       fill:white;
       font-size:30px;
@@ -135,24 +131,28 @@
       text-anchor:middle;
       dominant-baseline:middle;
     }
+
     .node-share{
       fill:#111;
       font-size:19px;
       font-weight:bold;
       text-anchor:middle;
     }
+
     .legend{
       text-align:center;
       margin-top:10px;
       font-size:14px;
       color:#555;
     }
+
     .cards{
       display:grid;
       grid-template-columns:repeat(3,1fr);
       gap:10px;
       margin-bottom:16px;
     }
+
     .card{
       border-radius:12px;
       color:white;
@@ -161,6 +161,7 @@
       font-weight:bold;
       line-height:1.5;
     }
+
     .claro{ background:#2b7bb9; }
     .tigo{ background:#e02222; }
     .directv{ background:#2ea526; }
@@ -178,14 +179,29 @@
     th{
       background:#f4f6f8;
     }
+
     .math-box{
       background:#f7fbff;
       border-left:4px solid #1f6feb;
       border-radius:10px;
       padding:14px;
       margin-top:14px;
-      line-height:1.7;
+      line-height:1.8;
     }
+
+    .formula{
+      font-size:18px;
+      margin-top:8px;
+    }
+
+    .matrix{
+      font-family: "Times New Roman", serif;
+      font-size:20px;
+      line-height:1.6;
+      white-space:pre-line;
+      margin-top:8px;
+    }
+
     .note{
       margin-top:12px;
       font-size:14px;
@@ -199,7 +215,7 @@
 
     <div class="controls">
       <div class="slider-row">
-        <label for="timeSlider"><strong>Tiempo \(t\)</strong></label>
+        <label for="timeSlider"><strong>Tiempo t</strong></label>
         <input type="range" id="timeSlider" min="0" max="10" step="0.01" value="0">
         <div class="time-box" id="timeValue">0.00</div>
       </div>
@@ -210,50 +226,50 @@
       </div>
 
       <div class="note">
-        Las etiquetas sobre las flechas son las <strong>probabilidades de transición</strong> de la cadena.
-        Los porcentajes mostrados en los nodos son las <strong>participaciones de mercado</strong> en el tiempo \(t\).
+        Las etiquetas sobre las flechas son las <strong>probabilidades de transición</strong>.
+        Los porcentajes en los nodos son las <strong>participaciones de mercado</strong> en el tiempo t.
       </div>
     </div>
 
     <div class="layout">
       <div class="panel">
-        <svg viewBox="0 0 900 650">
+        <svg viewBox="0 0 900 650" aria-label="Diagrama de Markov">
           <defs>
-            <marker id="arrow" markerWidth="14" markerHeight="14" refX="11" refY="7" orient="auto" markerUnits="strokeWidth">
-              <path d="M0,0 L14,7 L0,14 z" fill="#4d97a3"></path>
+            <marker id="arrow" markerWidth="11" markerHeight="11" refX="9" refY="5.5" orient="auto" markerUnits="strokeWidth">
+              <path d="M0,0 L11,5.5 L0,11 z" fill="#7fb4bf"></path>
             </marker>
           </defs>
 
-          <!-- Flechas entre C y T -->
-          <path class="edge" d="M305 170 Q450 90 595 170"></path>
-          <path class="edge" d="M595 240 Q450 310 305 240"></path>
+          <!-- Flechas C <-> T -->
+          <path class="edge" d="M305 170 Q450 95 595 170"></path>
+          <path class="edge" d="M595 245 Q450 320 305 245"></path>
 
-          <!-- Flechas entre C y D -->
-          <path class="edge" d="M235 285 Q220 395 335 470"></path>
-          <path class="edge" d="M390 470 Q345 365 285 285"></path>
+          <!-- Flechas C <-> D -->
+          <path class="edge" d="M230 295 Q215 405 340 470"></path>
+          <path class="edge" d="M390 465 Q330 365 275 285"></path>
 
-          <!-- Flechas entre T y D -->
-          <path class="edge" d="M665 285 Q680 395 565 470"></path>
-          <path class="edge" d="M510 470 Q555 365 615 285"></path>
+          <!-- Flechas T <-> D -->
+          <path class="edge" d="M670 295 Q685 405 560 470"></path>
+          <path class="edge" d="M510 465 Q570 365 625 285"></path>
 
           <!-- Auto-transiciones -->
-          <path class="self-edge" d="M175 155 C110 95, 110 245, 175 210"></path>
-          <path class="self-edge" d="M725 155 C790 95, 790 245, 725 210"></path>
-          <path class="self-edge" d="M425 560 C400 625, 500 625, 475 560"></path>
+          <path class="self-edge" d="M155 165 C95 100, 95 250, 155 210"></path>
+          <path class="self-edge" d="M745 165 C805 100, 805 250, 745 210"></path>
+          <path class="self-edge" d="M430 560 C410 620, 490 620, 470 560"></path>
 
-          <!-- Etiquetas de transición -->
-          <text class="edge-label" x="450" y="85">0.3</text>   <!-- C->T -->
-          <text class="edge-label" x="450" y="300">0.3</text>  <!-- T->C -->
+          <!-- Etiquetas -->
+          <text class="edge-label" x="450" y="88">0.3</text>
+          <text class="edge-label" x="450" y="306">0.3</text>
 
-          <text class="edge-label" x="205" y="410">0.1</text>  <!-- C->D -->
-          <text class="edge-label" x="340" y="355">0.3</text>  <!-- D->C -->
+          <text class="edge-label" x="198" y="410">0.1</text>
+          <text class="edge-label" x="333" y="350">0.3</text>
 
-          <text class="edge-label" x="695" y="400">0.3</text>  <!-- T->D -->
-          <text class="edge-label" x="560" y="355">0.4</text>  <!-- D->T -->
+          <text class="edge-label" x="702" y="410">0.3</text>
+          <text class="edge-label" x="568" y="350">0.4</text>
 
-          <text class="edge-label" x="95" y="135">0.6</text>   <!-- C->C -->
-          <text class="edge-label" x="805" y="135">0.4</text>  <!-- T->T -->
-          <text class="edge-label" x="450" y="640">0.3</text>  <!-- D->D -->
+          <text class="edge-label" x="85" y="138">0.6</text>
+          <text class="edge-label" x="815" y="138">0.4</text>
+          <text class="edge-label" x="450" y="635">0.3</text>
 
           <!-- Nodos -->
           <circle class="node" cx="220" cy="210" r="95" fill="#2b7bb9"></circle>
@@ -265,7 +281,7 @@
           <text class="node-title" x="680" y="210">T</text>
           <text class="node-title" x="450" y="500">D</text>
 
-          <!-- Participación actual -->
+          <!-- Participaciones -->
           <text class="node-share" id="shareC" x="220" y="335">55.00%</text>
           <text class="node-share" id="shareT" x="680" y="335">35.00%</text>
           <text class="node-share" id="shareD" x="450" y="645">10.00%</text>
@@ -298,41 +314,46 @@
         </table>
 
         <div class="math-box">
-          <strong>Modelo:</strong><br>
-          \[
-          p_{n+1}=p_nP
-          \]
-          <strong>Estado inicial:</strong><br>
-          \[
-          p_0=(0.55,\,0.35,\,0.10)
-          \]
-          <strong>Orden:</strong><br>
-          \[
-          (\text{Claro},\text{Tigo},\text{Directv})
-          \]
+          <strong>Modelo:</strong>
+          <div class="formula">
+            p<sub>n+1</sub> = p<sub>n</sub>P
+          </div>
+
+          <strong>Estado inicial:</strong>
+          <div class="formula">
+            p<sub>0</sub> = (0.55, 0.35, 0.10)
+          </div>
+
+          <strong>Orden:</strong>
+          <div class="formula">
+            (Claro, Tigo, Directv)
+          </div>
         </div>
 
         <div class="math-box">
           <strong>Matriz de transición:</strong>
-          \[
-          P=
-          \begin{pmatrix}
-          0.6 & 0.3 & 0.1\\
-          0.3 & 0.4 & 0.3\\
-          0.3 & 0.4 & 0.3
-          \end{pmatrix}
-          \]
+          <div class="matrix">
+P = ⎛ 0.6   0.3   0.1 ⎞
+    ⎜ 0.3   0.4   0.3 ⎟
+    ⎝ 0.3   0.4   0.3 ⎠
+          </div>
+        </div>
+
+        <div class="math-box">
+          <strong>Evolución:</strong>
+          <div class="formula">
+            p<sub>n</sub> = p<sub>0</sub>P<sup>n</sup>
+          </div>
         </div>
 
         <div class="note">
-          Esta simulación muestra cómo evoluciona \(p_n=p_0P^n\) al mover el tiempo entre 0 y 10.
+          Esta simulación muestra cómo evoluciona la distribución del mercado entre t = 0 y t = 10.
         </div>
       </div>
     </div>
   </div>
 
   <script>
-    // Orden: [Claro, Tigo, Directv]
     const P = [
       [0.6, 0.3, 0.1],
       [0.3, 0.4, 0.3],
