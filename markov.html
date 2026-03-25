@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Simulación cadena de Markov - Operadores</title>
+  <style>
+    body{
+      font-family: Arial, sans-serif;
+      background:#f7f7f7;
+      margin:0;
+      padding:20px;
+      color:#222;
+    }
+    .container{
+      max-width:1100px;
+      margin:0 auto;
+      background:white;
+      border-radius:18px;
+      box-shadow:0 6px 20px rgba(0,0,0,0.08);
+      padding:24px;
+    }
+    h1{
+      margin-top:0;
+      text-align:center;
+    }
+    .controls{
+      margin:20px 0 10px 0;
+      padding:14px;
+      background:#f2f5f9;
+      border-radius:12px;
+    }
+    .slider-row{
+      display:flex;
+      align-items:center;
+      gap:14px;
+      flex-wrap:wrap;
+    }
+    input[type="range"]{
+      flex:1;
+      min-width:260px;
+    }
+    .time-box{
+      font-size:18px;
+      font-weight:bold;
+      padding:8px 14px;
+      background:white;
+      border-radius:10px;
+      border:1px solid #ddd;
+      min-width:90px;
+      text-align:center;
+    }
+    .buttons{
+      margin-top:12px;
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+    button{
+      padding:10px 14px;
+      border:none;
+      border-radius:10px;
+      cursor:pointer;
+      font-size:15px;
+      background:#1f6feb;
+      color:white;
+    }
+    button.secondary{
+      background:#555;
+    }
+    .layout{
+      display:grid;
+      grid-template-columns: 1.45fr 0.9fr;
+      gap:20px;
+      align-items:start;
+    }
+    @media (max-width: 900px){
+      .layout{
+        grid-template-columns:1fr;
+      }
+    }
+    .panel{
+      background:#fcfcfc;
+      border:1px solid #ececec;
+      border-radius:16px;
+      padding:16px;
+    }
+    .legend{
+      display:grid;
+      grid-template-columns: repeat(3,1fr);
+      gap:10px;
+      margin-top:12px;
+    }
+    .legend-card{
+      border-radius:12px;
+      padding:12px;
+      color:white;
+      text-align:center;
+      font-weight:bold;
+    }
+    .claro{ background:#1f77b4; }
+    .tigo{ background:#d62728; }
+    .directv{ background:#2ca02c; }
+
+    table{
+      width:100%;
+      border-collapse:collapse;
+      margin-top:12px;
+    }
+    th, td{
+      padding:10px;
+      border-bottom:1px solid #e8e8e8;
+      text-align:center;
+    }
+    th{
+      background:#f4f6f8;
+    }
+    .formula{
+      background:#f8fbff;
+      border-left:4px solid #1f6feb;
+      padding:12px;
+      border-radius:8px;
+      margin-top:12px;
+      line-height:1.5;
+    }
+    .small{
+      font-size:14px;
+      color:#555;
+    }
+    svg{
+      width:100%;
+      height:auto;
+      display:block;
+      background:#fffdf8;
+      border-radius:12px;
+    }
+    .node-label{
+      font-size:26px;
+      font-weight:bold;
+      fill:white;
+      text-anchor:middle;
+      dominant-baseline:middle;
+    }
+    .node-value{
+      font-size:20px;
+      font-weight:bold;
+      fill:#111;
+      text-anchor:middle;
+    }
+    .flow-text{
+      font-size:18px;
+      font-weight:bold;
+      fill:#0b7285;
+      text-anchor:middle;
+    }
+    .self-text{
+      font-size:16px;
+      font-weight:bold;
+      fill:#0b7285;
+      text-anchor:middle;
+    }
+    .caption{
+      text-align:center;
+      font-size:14px;
+      color:#666;
+      margin-top:8px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Cadena de Markov: cambio de compañía con el tiempo</h1>
+
+    <div class="controls">
+      <div class="slider-row">
+        <label for="timeSlider"><strong>Tiempo \(t\)</strong></label>
+        <input type="range" id="timeSlider" min="0" max="10" step="0.01" value="0">
+        <div class="time-box" id="timeValue">0.00</div>
+      </div>
+
+      <div class="buttons">
+        <button id="playBtn">▶ Reproducir</button>
+        <button class="secondary" id="resetBtn">↺ Reiniciar</button>
+      </div>
+      <div class="small" style="margin-top:8px;">
+        El deslizador muestra una evolución suave entre los pasos enteros \(n=0,1,\dots,10\).
+      </div>
+    </div>
+
+    <div class="layout">
+      <div class="panel">
+        <svg viewBox="0 0 900 650">
+          <defs>
+            <marker id="arrowBlue" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto" markerUnits="strokeWidth">
+              <path d="M0,0 L12,6 L0,12 z" fill="#0b7285"></path>
+            </marker>
+          </defs>
+
+          <!-- Flechas -->
+          <path id="CT" d="M315 180 Q450 110 585 180" fill="none" stroke="#0b7285" stroke-width="8" marker-end="url(#arrowBlue)" stroke-linecap="round"/>
+          <path id="TC" d="M585 235 Q450 310 315 235" fill="none" stroke="#0b7285" stroke-width="8" marker-end="url(#arrowBlue)" stroke-linecap="round"/>
+
+          <path id="CD" d="M250 290 Q225 420 340 500" fill="none" stroke="#0b7285" stroke-width="8" marker-end="url(#arrowBlue)" stroke-linecap="round"/>
+          <path id="DC" d="M400 500 Q360 370 285 290" fill="none" stroke="#0b7285" stroke-width="8" marker-end="url(#arrowBlue)" stroke-linecap="round"/>
+
+          <path id="TD" d="M650 290 Q690 420 560 500" fill="none" stroke="#0b7285" stroke-width="8" marker-end="url(#arrowBlue)" stroke-linecap="round"/>
+          <path id="DT" d="M520 500 Q565 380 615 290" fill="none" stroke="#0b7285" stroke-width="8" marker-end="url(#arrowBlue)" stroke-linecap="round"/>
+
+          <!-- Auto-transiciones -->
+          <path id="CC" d="M175 165 C120 115, 120 245, 175 210" fill="none" stroke="#0b7285" stroke-width="8" marker-end="url(#arrowBlue)" stroke-linecap="round"/>
+          <path id="TT" d="M725 165 C780 115, 780 245, 725 210" fill="none" stroke="#0b7285" stroke-width="8" marker-end="url(#arrowBlue)" stroke-linecap="round"/>
+          <path id="DD" d="M455 585 C420 640, 580 640, 545 585" fill="none" stroke="#0b7285" stroke-width="8" marker-end="url(#arrowBlue)" stroke-linecap="round"/>
+
+          <!-- Etiquetas de flujos -->
+          <text id="labelCT" class="flow-text" x="450" y="105"></text>
+          <text id="labelTC" class="flow-text" x="450" y="285"></text>
+
+          <text id="labelCD" class="flow-text" x="210" y="405"></text>
+          <text id="labelDC" class="flow-text" x="340" y="385"></text>
+
+          <text id="labelTD" class="flow-text" x="685" y="405"></text>
+          <text id="labelDT" class="flow-text" x="565" y="385"></text>
+
+          <text id="labelCC" class="self-text" x="105" y="145"></text>
+          <text id="labelTT" class="self-text" x="795" y="145"></text>
+          <text id="labelDD" class="self-text" x="500" y="645"></text>
+
+          <!-- Nodos -->
+          <circle cx="220" cy="210" r="95" fill="#1f77b4" stroke="#111" stroke-width="4"></circle>
+          <circle cx="680" cy="210" r="95" fill="#d62728" stroke="#111" stroke-width="4"></circle>
+          <circle cx="450" cy="500" r="105" fill="#2ca02c" stroke="#111" stroke-width="4"></circle>
+
+          <!-- Letras -->
+          <text class="node-label" x="220" y="210">C</text>
+          <text class="node-label" x="680" y="210">T</text>
+          <text class="node-label" x="450" y="500">D</text>
+
+          <!-- Porcentajes -->
+          <text id="nodeClaro" class="node-value" x="220" y="330"></text>
+          <text id="nodeTigo" class="node-value" x="680" y="330"></text>
+          <text id="nodeDirectv" class="node-value" x="450" y="640"></text>
+        </svg>
+        <div class="caption">
+          C = Claro, T = Tigo, D = Directv
+        </div>
+      </div>
+
+      <div class="panel">
+        <h3 style="margin-top:0;">Participación de mercado</h3>
+
+        <div class="legend">
+          <div class="legend-card claro" id="cardClaro">Claro<br>0.00%</div>
+          <div class="legend-card tigo" id="cardTigo">Tigo<br>0.00%</div>
+          <div class="legend-card directv" id="cardDirectv">Directv<br>0.00%</div>
+        </div>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Empresa</th>
+              <th>Porcentaje</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Claro</td>
+              <td id="tableClaro">0.00%</td>
+            </tr>
+            <tr>
+              <td>Tigo</td>
+              <td id="tableTigo">0.00%</td>
+            </tr>
+            <tr>
+              <td>Directv</td>
+              <td id="tableDirectv">0.00%</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="formula">
+          <strong>Modelo:</strong><br>
+          \( p_{n+1} = p_n P \)
+          <br><br>
+          <strong>Estado inicial:</strong><br>
+          \( p_0 = (0.55,\;0.35,\;0.10) \)
+          <br><br>
+          <strong>Orden:</strong> (Claro, Tigo, Directv)
+        </div>
+
+        <div class="formula">
+          <strong>Matriz de transición:</strong><br>
+          \[
+          P=
+          \begin{pmatrix}
+          0.6 & 0.3 & 0.1\\
+          0.3 & 0.4 & 0.3\\
+          0.3 & 0.4 & 0.3
+          \end{pmatrix}
+          \]
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Orden: [Claro, Tigo, Directv]
+    const P = [
+      [0.6, 0.3, 0.1],
+      [0.3, 0.4, 0.3],
+      [0.3, 0.4, 0.3]
+    ];
+
+    const p0 = [0.55, 0.35, 0.10];
+    const maxN = 10;
+
+    const states = [p0];
+
+    function multiplyRowVectorMatrix(v, M){
+      return [
+        v[0]*M[0][0] + v[1]*M[1][0] + v[2]*M[2][0],
+        v[0]*M[0][1] + v[1]*M[1][1] + v[2]*M[2][1],
+        v[0]*M[0][2] + v[1]*M[1][2] + v[2]*M[2][2]
+      ];
+    }
+
+    for(let n=1; n<=maxN+1; n++){
+      states.push(multiplyRowVectorMatrix(states[n-1], P));
+    }
+
+    function lerp(a,b,t){
+      return a + (b-a)*t;
+    }
+
+    function interpolateState(time){
+      const n = Math.floor(time);
+      const alpha = time - n;
+      const a = states[Math.min(n, maxN)];
+      const b = states[Math.min(n+1, maxN+1)];
+      return [
+        lerp(a[0], b[0], alpha),
+        lerp(a[1], b[1], alpha),
+        lerp(a[2], b[2], alpha)
+      ];
+    }
+
+    function pct(x){
+      return (100*x).toFixed(2) + "%";
+    }
+
+    function flowPct(x){
+      return (100*x).toFixed(1) + "%";
+    }
+
+    function setStroke(id, value){
+      const el = document.getElementById(id);
+      el.setAttribute("stroke-width", (4 + 42*value).toFixed(2));
+      el.setAttribute("opacity", (0.28 + 0.72*(value/0.35)).toFixed(2));
+    }
+
+    function updateDiagram(time){
+      const p = interpolateState(time);
+
+      const claro = p[0];
+      const tigo = p[1];
+      const directv = p[2];
+
+      document.getElementById("timeValue").textContent = time.toFixed(2);
+
+      document.getElementById("nodeClaro").textContent = pct(claro);
+      document.getElementById("nodeTigo").textContent = pct(tigo);
+      document.getElementById("nodeDirectv").textContent = pct(directv);
+
+      document.getElementById("cardClaro").innerHTML = "Claro<br>" + pct(claro);
+      document.getElementById("cardTigo").innerHTML = "Tigo<br>" + pct(tigo);
+      document.getElementById("cardDirectv").innerHTML = "Directv<br>" + pct(directv);
+
+      document.getElementById("tableClaro").textContent = pct(claro);
+      document.getElementById("tableTigo").textContent = pct(tigo);
+      document.getElementById("tableDirectv").textContent = pct(directv);
+
+      // flujos aproximados basados en la distribución actual
+      const CC = claro * P[0][0];
+      const CT = claro * P[0][1];
+      const CD = claro * P[0][2];
+
+      const TC = tigo * P[1][0];
+      const TT = tigo * P[1][1];
+      const TD = tigo * P[1][2];
+
+      const DC = directv * P[2][0];
+      const DT = directv * P[2][1];
+      const DD = directv * P[2][2];
+
+      // grosor visual
+      setStroke("CC", CC);
+      setStroke("CT", CT);
+      setStroke("CD", CD);
+
+      setStroke("TC", TC);
+      setStroke("TT", TT);
+      setStroke("TD", TD);
+
+      setStroke("DC", DC);
+      setStroke("DT", DT);
+      setStroke("DD", DD);
+
+      // etiquetas
+      document.getElementById("labelCC").textContent = flowPct(CC);
+      document.getElementById("labelCT").textContent = flowPct(CT);
+      document.getElementById("labelCD").textContent = flowPct(CD);
+
+      document.getElementById("labelTC").textContent = flowPct(TC);
+      document.getElementById("labelTT").textContent = flowPct(TT);
+      document.getElementById("labelTD").textContent = flowPct(TD);
+
+      document.getElementById("labelDC").textContent = flowPct(DC);
+      document.getElementById("labelDT").textContent = flowPct(DT);
+      document.getElementById("labelDD").textContent = flowPct(DD);
+    }
+
+    const slider = document.getElementById("timeSlider");
+    slider.addEventListener("input", e => {
+      updateDiagram(parseFloat(e.target.value));
+    });
+
+    let playing = false;
+    let anim = null;
+    const playBtn = document.getElementById("playBtn");
+    const resetBtn = document.getElementById("resetBtn");
+
+    playBtn.addEventListener("click", () => {
+      if(!playing){
+        playing = true;
+        playBtn.textContent = "⏸ Pausar";
+        anim = setInterval(() => {
+          let v = parseFloat(slider.value);
+          v += 0.03;
+          if(v >= 10){
+            v = 10;
+            clearInterval(anim);
+            playing = false;
+            playBtn.textContent = "▶ Reproducir";
+          }
+          slider.value = v.toFixed(2);
+          updateDiagram(v);
+        }, 30);
+      }else{
+        playing = false;
+        playBtn.textContent = "▶ Reproducir";
+        clearInterval(anim);
+      }
+    });
+
+    resetBtn.addEventListener("click", () => {
+      clearInterval(anim);
+      playing = false;
+      playBtn.textContent = "▶ Reproducir";
+      slider.value = 0;
+      updateDiagram(0);
+    });
+
+    updateDiagram(0);
+  </script>
+</body>
+</html>
